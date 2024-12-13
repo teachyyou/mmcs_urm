@@ -21,8 +21,15 @@ default: &default
 
 
 development:
-  <<: *default
-  database: mmcs_urm_development
+  adapter: postgresql
+  encoding: unicode
+  database: mmcs_urm
+  pool: 5
+  username: postgres
+  password: mypassword
+  host: localhost
+  port: 1096
+
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
