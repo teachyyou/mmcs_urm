@@ -28,7 +28,7 @@ development:
   username: postgres
   password: mypassword
   host: localhost
-  port: 1096
+  port: 5432
 
 
   # The specified database role being used to connect to PostgreSQL.

@@ -1,0 +1,17 @@
+<div style="display: flex; height: 100vh;">
+  <div style="width: 30%; border-right: 1px solid #ccc;">
+    <% @machines.each do |machine| %>
+      <button><%= machine.name %></button>
+    <% end %>
+  </div>
+  <div style="width: 70%; padding-left: 20px;">
+    <h1><%= @selected_machine&.name %></h1>
+    <p><%= @selected_machine&.description %></p>
+    <button>Запустить</button>
+    <button>Редактировать</button>
+    <div style="margin-top: 20px;">
+      <button>Создать</button>
+      <button>Раскодировать</button>
+    </div>
+  </div>
+</div>
