@@ -11,9 +11,21 @@ class UrmController < ApplicationController
   end
   def index
     @machines = [
-      Machine.new(name: "machine1"),
-      Machine.new(name: "machine2"),
-      Machine.new(name: "machine3")
+      Machine.new("machine1"),
+      Machine.new("machine2"),
+      Machine.new("machine3"),
+      Machine.new("machine1"),
+      Machine.new("machine2"),
+      Machine.new("machine3"),
+      Machine.new("machine1"),
+      Machine.new("machine2"),
+      Machine.new("machine3"),
+      Machine.new("machine1"),
+      Machine.new("machine2"),
+      Machine.new("machine3"),
+      Machine.new("machine1"),
+      Machine.new("machine2"),
+      Machine.new("machine3"),
     ]
     @selected_machine = Machine.new("machine","this is the description")
   end
