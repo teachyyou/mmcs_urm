@@ -26,9 +26,9 @@ development:
   database: mmcs_urm
   pool: 5
   username: postgres
-  password: mypassword
+  password: 01020304vV
   host: localhost
-  port: 1096
+  port: 5432
 
 
   # The specified database role being used to connect to PostgreSQL.
