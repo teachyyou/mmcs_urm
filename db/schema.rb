@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_16_171037) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_17_184044) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "machines", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "name"
     t.string "description"
     t.integer "input_counts"
     t.string "author"
     t.string "archived_at"
     t.string "instructions", default: [], array: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 end

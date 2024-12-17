@@ -26,7 +26,7 @@ development:
   database: mmcs_urm
   pool: 5
   username: postgres
-  password: 01020304vV
+  password: mypassword
   host: localhost
   port: 5432
 
