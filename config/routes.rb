@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root to: "welcome#index" # Настройка корневого маршрута на новый контроллер
-  get 'urm/index', to: "urm#index"
-  
+  get "machines", to: "urm#index"
 
 end

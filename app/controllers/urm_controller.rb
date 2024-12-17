@@ -1,36 +1,25 @@
 class UrmController < ApplicationController
-
-  class Machine
-    attr_accessor :name, :description
-
-    def initialize(name, description = "description")
-      @name = name
-      @description = description
-    end
-
-  end
   def index
-    @machines = [
-      Machine.new("machine1"),
-      Machine.new("machine2"),
-      Machine.new("machine3"),
-      Machine.new("machine1"),
-      Machine.new("machine2"),
-      Machine.new("machine3"),
-      Machine.new("machine1"),
-      Machine.new("machine2"),
-      Machine.new("machine3"),
-      Machine.new("machine1"),
-      Machine.new("machine2"),
-      Machine.new("machine3"),
-      Machine.new("machine1"),
-      Machine.new("machine2"),
-      Machine.new("machine3"),
-    ]
-    @selected_machine = Machine.new("machine","this is the description")
+    limit = params[:limit]&.to_i || 10
+    offset = params[:offset]&.to_i || 0
+
+    machines = Machine.limit(limit).offset(offset)
+
+    render json: {
+      machines: machines.map do |machine|
+        {
+          uuid: machine.id,
+          name: machine.name,
+          description: machine.description,
+          inputs_count: machine.input_counts,
+          author: machine.author,
+          created_at: machine.created_at.iso8601,
+          updated_at: machine.updated_at.iso8601,
+          archived_at: machine.archived_at&.iso8601,
+          instructions: machine.instructions
+        }
+      end,
+      totalCount: Machine.count
+    }
   end
-
-
 end
-
-
