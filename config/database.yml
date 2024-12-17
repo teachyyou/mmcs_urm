@@ -21,14 +21,12 @@ default: &default
 
 
 development:
-  adapter: postgresql
-  encoding: unicode
-  database: mmcs_urm
-  pool: 5
-  username: postgres
-  password: mypassword
-  host: localhost
-  port: 1096
+  <<: *default
+  database: <%= ENV.fetch("DEVELOPMENT_DB_NAME") %>
+  username: <%= ENV.fetch("DEVELOPMENT_DB_USER") %>
+  password: <%= ENV.fetch("DEVELOPMENT_DB_PASSWORD") %>
+  host: <%= ENV.fetch("DEVELOPMENT_DB_HOST") %>
+  port: <%= ENV.fetch("DEVELOPMENT_DB_PORT") %>
 
 
   # The specified database role being used to connect to PostgreSQL.
