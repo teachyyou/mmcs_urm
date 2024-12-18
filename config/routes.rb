@@ -11,6 +11,10 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root to: "welcome#index" # Настройка корневого маршрута на новый контроллер
+  get '/add_new_machine', to: 'machines#add_new_machine', as: 'add_new_machine'
+  Rails.application.routes.draw do
+    resources :machines, only: [:create]
+  end
   get "machines", to: "urm#index"
 
 end

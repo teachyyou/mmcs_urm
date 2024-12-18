@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выходные регистры</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+      }
+      .form-container {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          max-height: 600px;
+          overflow-y: auto;
+          width: 1000px;
+          border: 1px solid #ccc;
+          padding: 10px;
+      }
+      .input-field {
+          width: 500px;
+          height: 40px;
+          margin: 10px 0;
+          padding-left: 5px;
+          font-size: 16px;
+      }
+      .add-button {
+          width: 50px;
+          height: 50px;
+          border: none;
+          border-radius: 50%;
+          background-color: #4CAF50;
+          color: white;
+          font-size: 24px;
+          cursor: pointer;
+          margin-top: 20px;
+      }
+      .label-container {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+      }
+      .input-wrapper {
+          display: flex;
+          align-items: center;
+          margin: 5px 0;
+      }
+      .input-number {
+          width: 20px;
+          margin-right: 10px;
+      }
+      .remove-button {
+          width: 30px;
+          height: 30px;
+          border: none;
+          border-radius: 50%;
+          background-color: red;
+          color: white;
+          font-size: 20px;
+          cursor: pointer;
+          margin-left: 10px;
+      }
+      .save-button {
+          margin-left: 400px;
+          padding: 10px 20px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          justify-content: center;
+          align-items: center;
+      }
+      .modal-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          width: 400px;
+      }
+      .modal-input {
+          width: 380px;
+          margin: 10px 0;
+          padding: 10px;
+          font-size: 16px;
+      }
+      .modal-button {
+          margin: 5px;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      .cancel-button {
+          margin-right: 150px;
+          background-color: red;
+          color: white;
+      }
+      .confirm-button {
+          background-color: green;
+          color: white;
+      }
+  </style>
+</head>
+<body>
+<div class="label-container">
+  <label for="register-count">Количество выходных регистров:</label>
+  <select id="register-count">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+  </select>
+</div>
+<div class="form-container" id="form-container">
+  <div class="input-wrapper">
+    <span class="input-number">1</span>
+    <input type="text" class="input-field" placeholder="Введите текст...">
+  </div>
+</div>
+<div style="display: flex; align-items: center;">
+  <button class="add-button" id="add-button" onclick="addInputField()">+</button>
+  <button class="save-button" onclick="openModal()">Сохранить</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Введите информацию</h3>
+    <input type="text" class="modal-input" placeholder="Название Машины" id="machine-name">
+    <textarea class="modal-input" placeholder="Описание" id="machine-description"></textarea>
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="modal-button cancel-button" onclick="closeModal()">✖ Отмена</button>
+      <button class="modal-button confirm-button" onclick="confirm()">✔ Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+    let inputCount = 1;
+
+    function addInputField() {
+        if (inputCount < 15) {
+            inputCount++;
+            if (inputCount === 15) {
+                document.getElementById('add-button').style.display = 'none';
+            }
+            const formContainer = document.getElementById('form-container');
+            const newInputWrapper = document.createElement('div');
+            newInputWrapper.className = 'input-wrapper';
+
+            const newInputNumber = document.createElement('span');
+            newInputNumber.className = 'input-number';
+            newInputNumber.textContent = inputCount;
+
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.className = 'input-field';
+            newInput.placeholder = 'Введите текст...';
+
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-button';
+            removeButton.textContent = '-';
+            removeButton.onclick = function() { removeInputField(removeButton); };
+
+            newInputWrapper.appendChild(newInputNumber);
+            newInputWrapper.appendChild(newInput);
+            newInputWrapper.appendChild(removeButton);
+            formContainer.appendChild(newInputWrapper);
+        }
+    }
+
+    function removeInputField(button) {
+        const inputWrapper = button.parentElement;
+        inputWrapper.remove();
+        inputCount--;
+        updateInputNumbers();
+
+        if (inputCount < 15) {
+            document.getElementById('add-button').style.display = 'block';
+        }
+    }
+
+    function updateInputNumbers() {
+        const inputWrappers = document.querySelectorAll('.input-wrapper');
+        inputCount = inputWrappers.length;
+        inputWrappers.forEach((wrapper, index) => {
+            const numberSpan = wrapper.querySelector('.input-number');
+            numberSpan.textContent = index + 1;
+        });
+    }
+
+    function openModal() {
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function confirm() {
+        const carName = document.getElementById('machine-name').value;
+        const carDescription = document.getElementById('machine-description').value;
+        const registerCount = document.getElementById('register-count').value;
+
+        const instructions = Array.from(document.querySelectorAll('.input-field')).map((input, index) => {
+            return `${index + 1}. ${input.value}`;
+        });
+
+        const data = {
+            name: carName,
+            description: carDescription,
+            author: "L-S-N",
+            input_counts: registerCount,
+            instructions: instructions
+        };
+
+        fetch('/machines', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(data => {
+              console.log('Success:', data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+        closeModal()
+    }
+</script>
+</body>
+</html>
