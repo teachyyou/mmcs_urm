@@ -8,3 +8,20 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+
+ .home-buttons{
+    margin-top: 10px; 
+    margin-bottom:10px;
+    padding: 10px; 
+    border: 3px solid  #007bff; 
+    background-color:rgb(243, 243, 243);
+ }
+
+ .home-buttons:hover {
+    background-color: rgb(158, 201, 246);
+  }
+  
+  .home-buttons:active {
+    background-color: rgb(138, 187, 240);
+  }

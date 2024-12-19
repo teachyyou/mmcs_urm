@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   Rails.application.routes.draw do
     resources :machines, only: [:create]
   end
-  get "machines", to: "urm#index"
+  get "machines", to: "machines#index"
+  get '/machines/show_machine/:id', to: 'machines#show_machine', as: 'show_machine'
 
 end
