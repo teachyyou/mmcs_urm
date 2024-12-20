@@ -5,23 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Homepage</title>
   <style>
-    .home-buttons{
-    margin-top: 10px; 
-    margin-bottom:10px;
-    padding: 10px; 
-    border: 3px solid  #007bff; 
-    background-color:rgb(243, 243, 243);
-    width: 150px;
-    font-size: 15px;
+    
+    .home-button{
+      padding: 10px; 
+      width: 150px;
     }
 
-    .home-buttons:hover {
-      background-color: rgb(158, 201, 246);
-    }
-    
-    .home-buttons:active {
-      background-color: rgb(138, 187, 240);
-    }
     .machines-container {
       display: flex;
       flex-direction: column;
@@ -32,23 +21,6 @@
       overflow-y: auto;
     }
 
-    .show-machine-button {
-      font-size: 15px;
-      margin-top: 10px;
-      margin-bottom: 10px;
-      padding: 20px;
-      border: 3px solid #007bff;
-      background-color: rgb(243, 243, 243);
-    }
-    .show-machine-button:hover {
-      background-color: rgb(158, 201, 246);
-
-    }
-    .show-machine-button:active {
-      background-color: rgb(138, 187, 240);
-
-
-    }
     </style>
 </head>
 <body>
@@ -64,37 +36,44 @@
       overflow-y: auto"> <%# todo %>
         
         <div class="machines-container">
-                <% @machines.each do |machine| %>
-                    <button class="show-machine-button"
-                            data-machine-id="<%= machine.id %>"
-                            onmouseover="this.style.backgroundColor='rgb(158, 201, 246)'"
-                            onmouseout="this.style.backgroundColor='rgb(243, 243, 243)'"
-                            onmousedown="this.style.backgroundColor='rgb(138, 187, 240)'"
-                            onmouseup="this.style.backgroundColor='rgb(158, 201, 246)'"
-                    >
-                        <%= machine.name %>
-                    </button>
-                <% end %>
-            </div>
+          <% @machines.each do |machine| %>
+            <button style = "padding: 20px; "
+              class="base-button show-machine-button"
+              data-machine-id="<%= machine.id %>"
+              onmouseover="this.style.backgroundColor='rgb(158, 201, 246)'"
+              onmouseout="this.style.backgroundColor='rgb(243, 243, 243)'"
+              onmousedown="this.style.backgroundColor='rgb(138, 187, 240)'"
+              onmouseup="this.style.backgroundColor='rgb(158, 201, 246)'"
+            >
+                <%= machine.name %>
+            </button>
+          <% end %>
+        </div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column; width: 50%; padding-left: 20px; 
     margin-top: auto; margin-bottom: auto; min-height: 100vh;">
       <div style = "height: 70%; border-bottom: 1px solid #ccc;"> <%# todo %>
-        <h1 id="selected-machine-name"></h1>
-        <p id="selected-machine-description" 
-        style = "background-color: #f3f3f3; min-height: 20vh;"></p>
+        <h1 id="selected-machine-name">Имя</h1>
+        <div style = "background-color: #f3f3f3; min-height: 20vh; border: 3px solid #007bff;">
+          <p id="selected-machine-description" 
+          style = "padding-left: 10px;">
+            Описание
+          </p>
+        </div>
         <div style = "display: flex; flex-direction: row; 
         justify-content:space-around;">
-          <button class='home-buttons'>Запустить</button>
-          <%= button_to "Редактировать", '/add_new_machine', method: :get, class: 'home-buttons'%>
+          <button class='base-button home-button'>Запустить</button>
+          <%= button_to "Редактировать", '/add_new_machine', method: :get, 
+          class: 'base-button home-button'%>
         </div>    
       </div>    
       <div style = "height: 30%;"> <%# todo %>    
         <div style="margin-top: 20px;display: flex; flex-direction: row; justify-content:space-around;">
-          <%= button_to "Создать", '/add_new_machine', method: :get, class: 'home-buttons'%>
+          <%= button_to "Создать", '/add_new_machine', method: :get, 
+          class: 'base-button home-button'%>
           
-          <button class='home-buttons'>Раскодировать</button>
+          <button class='base-button home-button'>Раскодировать</button>
           
         </div>
       </div>

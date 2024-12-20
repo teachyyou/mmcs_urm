@@ -8,5 +8,23 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+:root{
+    --bright-blue: #007bff;
+    --light-gray-background: rgb(243, 243, 243);
+    --light-blue-background: rgb(158, 201, 246);
+    --light-dark-blue-background: rgb(138, 187, 240);
+}
 
-
+ .base-button{
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 3px solid var(--bright-blue);
+    background-color: var(--light-gray-background);
+  }
+  .base-button:hover{
+    background-color: var(--light-blue-background);
+  }
+  .base-button:active{
+    background-color: var(--light-dark-blue-background);
+  }
