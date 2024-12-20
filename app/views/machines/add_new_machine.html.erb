@@ -36,7 +36,7 @@
           height: 50px;
           border: none;
           border-radius: 50%;
-          background-color: #007bff;
+          background-color:var(--bright-blue);
           color: white;
           font-size: 24px;
           cursor: pointer;
@@ -118,17 +118,36 @@
       }
       .cancel-button {
           margin-right: 150px;
-          background-color: red;
+          background-color: rgb(255, 0, 111);
           color: white;
       }
+      .cancel-button:hover {
+            background-color:rgb(171, 0, 74); 
+        }
+
+        .cancel-button:active {
+            background-color: rgb(108, 0, 47);
+        }
       .confirm-button {
-          background-color: green;
+          background-color: var(--bright-blue);
           color: white;
       }
+      .confirm-button:hover {
+            background-color:rgb(0, 98, 203); 
+        }
+
+        .confirm-button:active {
+            background-color:rgb(0, 75, 156); 
+        }
     
   </style>
 </head>
 <body>
+<div style="position: fixed; top: 0; left: 0; width: 100%;
+background-color: #007bff; color: white; padding: 10px; text-align: center; 
+margin:0px; font-size: 25px;">
+  <%= link_to "URM Machines", "/machines", style: "color: white; text-decoration: none;" %>
+</div>
 <div class="label-container">
   <label for="register-count">Количество выходных регистров:</label>
   <select id="register-count">
