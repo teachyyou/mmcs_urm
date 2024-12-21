@@ -1,4 +1,7 @@
+require "urm/machine"
 class MachinesController < ApplicationController
+
+  skip_before_action :verify_authenticity_token, only: [:create]
 
   def create
     data = JSON.parse(request.body.read)
@@ -7,8 +10,9 @@ class MachinesController < ApplicationController
       description: data['description'],
       author: data['author'],
       input_counts: data['input_counts'],
-      instructions: data['instructions'].to_json
+      instructions: data['instructions']
     )
+
 
     if machine.save
       render json: { message: 'Machine created successfully', machine: machine }, status: :created
@@ -19,7 +23,6 @@ class MachinesController < ApplicationController
 
   def index
     @machines = Machine.all
-    #render json: @machines
   end
 
   def show_machine
