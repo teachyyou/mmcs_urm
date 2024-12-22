@@ -70,7 +70,7 @@
       </div>    
       <div style = "height: 30%;"> <%# todo %>    
         <div style="margin-top: 20px;display: flex; flex-direction: row; justify-content:space-around;">
-          <%= button_to "Создать", '/add_new_machine', method: :get, 
+          <%= button_to "Создать", '/machines/new', method: :get, 
           class: 'base-button home-button'%>
           
           <button class='base-button home-button'>Раскодировать</button>
@@ -84,32 +84,37 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function registerMachineButtons() {
     const machinesContainer = document.querySelector('.machines-container'); // Замени на класс твоего контейнера
 
     machinesContainer.addEventListener('click', function(event) {
-        if (event.target.classList.contains('show-machine-button')) {
-            const button = event.target;
-            const machineId = button.getAttribute('data-machine-id');
-            const machineName = document.getElementById('selected-machine-name');
-            const machineDescription = document.getElementById('selected-machine-description');
-            fetch('<%= show_machine_path(id: 0) %>'.replace('0', machineId), {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                machineName.textContent = data.name;
-                machineDescription.textContent = data.description;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    });
-});
+      if (event.target.classList.contains('show-machine-button')) {
+        const button = event.target;
+        const machineId = button.getAttribute('data-machine-id');
+        const machineName = document.getElementById('selected-machine-name');
+        const machineDescription = document.getElementById('selected-machine-description');
+        fetch('<%= show_machine_path(id: 0) %>'.replace('0', machineId), {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          machineName.textContent = data.name;
+          machineDescription.textContent = data.description;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      }
+  });
+}
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", registerMachineButtons);
+  } else {
+    registerMachineButtons();
+  }
 </script>
 
 </body>
