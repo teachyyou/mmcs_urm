@@ -26,8 +26,18 @@
 <body>
 <div style="display: flex; height: 100vh; width: 100%; top: 0; left: 0; position: fixed;
  flex-direction:column; align-content: stretch;">
-  <div style="background-color: #007bff; color: white; 
-  padding: 10px; text-align: center; margin:0px; font-size: 25px;">URM Machines</div>
+
+  <div style="background-color: #007bff; color: white;
+    height: 80px; display: flex; align-items: center; justify-content: center; position: relative; padding: 30px; margin: 0px; font-size: 35px;">
+
+    <div style="flex-grow: 1; text-align: center;">URM Machines</div>
+
+    <div style="position: absolute; right: 20px;">
+      <%= button_to "Регистрация", new_user_registration_path, method: :get, class: 'base-button home-button' %>
+      <%= button_to "Войти", new_user_session_path, method: :get, class: 'base-button home-button' %>
+    </div>
+
+  </div>
   <div style="display: flex; flex-direction:row">
     <div style="width: 50%; border-right: 1px solid #ccc; ">
       

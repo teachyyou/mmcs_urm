@@ -1,0 +1,15 @@
+<h1>Вход</h1>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { method: :post }) do |f| %>
+  <div>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div>
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+  </div>
+  <div>
+    <%= f.submit "Войти" %>
+  </div>
+<% end %>

@@ -10,4 +10,9 @@ Rails.application.routes.draw do
   resources :machines, only: [:create, :index]
 
   get '/machines/show_machine/:id', to: 'machines#show_machine', as: 'show_machine'
+
+  devise_for :users, controllers: { registrations: 'users/registrations' }
+
+  #get 'machines/index', to: 'devise/registrations#new', as: 'new_user_registration'
+
 end
