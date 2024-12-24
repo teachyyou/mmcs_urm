@@ -15,4 +15,6 @@ Rails.application.routes.draw do
 
   #get 'machines/index', to: 'devise/registrations#new', as: 'new_user_registration'
 
+  get '/machines/:id/edit', to: 'machines#new_machine', as: 'edit_machine'
+
 end
