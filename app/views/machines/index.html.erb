@@ -1,121 +1,160 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homepage</title>
   <style>
-    
-    .home-button{
-      padding: 10px; 
-      width: 150px;
-    }
-
-    .machines-container {
-      display: flex;
-      flex-direction: column;
-      align-content: center;
-      justify-content: flex-start;
-      height: 100vh;
-      margin-top: 20px;
-      overflow-y: auto;
-    }
-
-    </style>
+      .home-button {
+          padding: 10px;
+          width: 150px;
+      }
+      .machines-container {
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: flex-start;
+          height: 100vh;
+          margin-top: 20px;
+          overflow-y: auto;
+      }
+  </style>
 </head>
 <body>
-<div style="display: flex; height: 100vh; width: 100%; top: 0; left: 0; position: fixed;
- flex-direction:column; align-content: stretch;">
-  <div style="background-color: #007bff; color: white; 
-  padding: 10px; text-align: center; margin:0px; font-size: 25px;">URM Machines</div>
-  <div style="display: flex; flex-direction:row">
-    <div style="width: 50%; border-right: 1px solid #ccc; ">
-      
-      <div style = "display:flex; flex-direction:column; align-content:center; 
-      justify-content:flex-start; height:100vh; margin-top: 20px;
-      overflow-y: auto"> <%# todo %>
-        
-        <div class="machines-container">
-          <% @machines.each do |machine| %>
-            <button style = "padding: 20px; "
-              class="base-button show-machine-button"
-              data-machine-id="<%= machine.id %>"
-              onmouseover="this.style.backgroundColor='rgb(158, 201, 246)'"
-              onmouseout="this.style.backgroundColor='rgb(243, 243, 243)'"
-              onmousedown="this.style.backgroundColor='rgb(138, 187, 240)'"
-              onmouseup="this.style.backgroundColor='rgb(158, 201, 246)'"
-            >
-                <%= machine.name %>
-            </button>
-          <% end %>
-        </div>
+<div
+  style="
+  display: flex;
+    height: 100vh;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    flex-direction: column;
+    align-content: stretch;
+  "
+>
+  <div
+    style="
+    background-color: #007bff;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      margin: 0px;
+      font-size: 25px;
+    "
+  >
+    URM Machines
+  </div>
+  <div style="display: flex; flex-direction: row">
+    <!-- Левая половина -->
+    <div style="width: 50%; border-right: 1px solid #ccc">
+      <div
+        style="
+        display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: flex-start;
+          height: 100vh;
+          margin-top: 20px;
+          overflow-y: auto;
+        "
+      >
+        <!-- Здесь кнопки будут создаваться динамически -->
+        <div class="machines-container"></div>
       </div>
     </div>
-    <div style="display: flex; flex-direction: column; width: 50%; padding-left: 20px; 
-    margin-top: auto; margin-bottom: auto; min-height: 100vh;">
-      <div style = "height: 70%; border-bottom: 1px solid #ccc;"> <%# todo %>
+
+    <!-- Правая половина -->
+    <div
+      style="
+      display: flex;
+        flex-direction: column;
+        width: 50%;
+        padding-left: 20px;
+        margin-top: auto;
+        margin-bottom: auto;
+        min-height: 100vh;
+      "
+    >
+      <div style="height: 70%; border-bottom: 1px solid #ccc">
         <h1 id="selected-machine-name">Имя</h1>
-        <div style = "background-color: #f3f3f3; min-height: 20vh; border: 3px solid #007bff;">
-          <p id="selected-machine-description" 
-          style = "padding-left: 10px;">
+        <div
+          style="
+          background-color: #f3f3f3;
+            min-height: 20vh;
+            border: 3px solid #007bff;
+          "
+        >
+          <p id="selected-machine-description" style="padding-left: 10px">
             Описание
           </p>
         </div>
-        <div style = "display: flex; flex-direction: row; 
-        justify-content:space-around;">
-          <button class='base-button home-button'>Запустить</button>
-          <%= button_to "Редактировать", '/add_new_machine', method: :get, 
-          class: 'base-button home-button'%>
-        </div>    
-      </div>    
-      <div style = "height: 30%;"> <%# todo %>    
-        <div style="margin-top: 20px;display: flex; flex-direction: row; justify-content:space-around;">
-          <%= button_to "Создать", '/machines/new', method: :get, 
-          class: 'base-button home-button'%>
-          
-          <button class='base-button home-button'>Раскодировать</button>
-          
+        <div style="display: flex; flex-direction: row; justify-content: space-around">
+          <button class="base-button home-button">Запустить</button>
+          <%= button_to "Редактировать", "/add_new_machine", method: :get, class: "base-button home-button" %>
+        </div>
+      </div>
+      <div style="height: 30%">
+        <div
+          style="
+          margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+          "
+        >
+          <%= button_to "Создать", "/machines/new", method: :get, class: "base-button home-button" %>
+          <button class="base-button home-button">Раскодировать</button>
         </div>
       </div>
     </div>
   </div>
-  
 </div>
 
-
 <script>
-    function registerMachineButtons() {
-    const machinesContainer = document.querySelector('.machines-container'); // Замени на класс твоего контейнера
+    // Массив, где будут храниться все машины
+    let machinesData = [];
 
-    machinesContainer.addEventListener('click', function(event) {
-      if (event.target.classList.contains('show-machine-button')) {
-        const button = event.target;
-        const machineId = button.getAttribute('data-machine-id');
-        const machineName = document.getElementById('selected-machine-name');
-        const machineDescription = document.getElementById('selected-machine-description');
-        fetch('<%= show_machine_path(id: 0) %>'.replace('0', machineId), {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        .then(response => response.json())
-        .then(data => {
-          machineName.textContent = data.name;
-          machineDescription.textContent = data.description;
-        })
-        .catch(error => {
-          console.error('Error:', error);
+    // Функция загрузки всех машин (JSON) с сервера
+    async function loadMachines() {
+        try {
+            const response = await fetch("/machines.json1"); // GET /machines (возвращает JSON)
+            const data = await response.json();
+            machinesData = data.machines; // сохраняем машины в переменной
+            createMachineButtons(machinesData);
+        } catch (error) {
+            console.error("Error fetching machines:", error);
+        }
+    }
+
+    // Функция для динамического создания кнопок
+    function createMachineButtons(machines) {
+        const machinesContainer = document.querySelector(".machines-container");
+        // Очищаем контейнер, если нужно
+        machinesContainer.innerHTML = "";
+        machines.forEach((machine) => {
+            const button = document.createElement("button");
+            button.className = "base-button show-machine-button";
+            button.style.padding = "20px";
+            button.textContent = machine.name;
+            button.setAttribute("data-machine-id", machine.id);
+            button.addEventListener("click", () => {
+                showMachineDetails(machine);
+            });
+            machinesContainer.appendChild(button);
         });
-      }
-  });
-}
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", registerMachineButtons);
-  } else {
-    registerMachineButtons();
-  }
-</script>
+    }
 
+    // Функция для отображения деталей машины
+    function showMachineDetails(machine) {
+        const machineName = document.getElementById("selected-machine-name");
+        const machineDescription = document.getElementById("selected-machine-description");
+        machineName.textContent = machine.name;
+        machineDescription.textContent = machine.description;
+    }
+
+    // Запускаем загрузку данных после готовности DOM
+    document.addEventListener("DOMContentLoaded", loadMachines);
+</script>
 </body>
 </html>
