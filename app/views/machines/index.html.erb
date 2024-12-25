@@ -14,10 +14,11 @@
           display: flex;
           flex-direction: column;
           align-content: center;
-          justify-content: flex-start;
-          height: 100vh;
+          justify-content: flex-end;
+          height: 85vh;
           margin-top: 20px;
-          overflow-y: auto;
+          margin-bottom: 20px;
+          overflow-y: scroll;
       }
 
       /* Модальное окно */
@@ -59,7 +60,7 @@
   </style>
 </head>
 <body>
-<div style="display: flex; height: 100vh; width: 100%; top: 0; left: 0; position: fixed; flex-direction:column; align-content: stretch;">
+<div style="display: flex; height: 100%; width: 100%; top: 0; left: 0; position: fixed; flex-direction:column; align-content: stretch;">
 
   <div style="background-color: #007bff; color: white; height: 80px; display: flex; align-items: center; justify-content: center; position: relative; padding: 30px; margin: 0px; font-size: 35px;">
     <div style="flex-grow: 1; text-align: center;">URM Machines</div>
@@ -73,11 +74,12 @@
     </div>
   </div>
 
-  <div style="display: flex; flex-direction:row">
-    <div style="width: 50%; border-right: 1px solid #ccc;">
-      <div class="machines-container">
+  <div style="display: flex; flex-direction:row; ">
+    <div style="width: 50%; height: 100%; border-right: 1px solid #ccc;">
+      <div style="display: flex; justify-content: stretch;" class="machines-container">
         <% @machines.each do |machine| %>
-          <button style="padding: 20px; width: 450px ;" class="base-button show-machine-button" data-machine-id="<%= machine.id %>">
+          <button style="padding: 20px; margin: 5px 10px;" 
+          class="base-button show-machine-button" data-machine-id="<%= machine.id %>">
             <%= machine.name %>
           </button>
           <% if user_signed_in? &&  machine.author == current_user.id%>
@@ -94,12 +96,13 @@
           <p id="selected-machine-description" style="padding-left: 10px;">Описание</p>
         </div>
         <div style="display: flex; flex-direction: row; justify-content:space-around;">
-          <button class='base-button home-button'>Запустить</button>
+          <button style="margin: 15px;" class='base-button home-button'>Запустить</button>
         </div>
       </div>
 
       <div style="height: 30%;">
-        <div style="margin-top: 20px; display: flex; flex-direction: row; justify-content:space-around;">
+        <div style="margin-top: 20px; display: flex; flex-direction: row; 
+        justify-content:space-around;">
           <button id="create-button" class='base-button home-button'>Создать</button>
           <button class='base-button home-button'>Раскодировать</button>
         </div>
