@@ -2,7 +2,6 @@ require "urm/machine"
 class MachinesController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: [:create]
-
   def create
     data = JSON.parse(request.body.read)
     machine = Machine.new(
@@ -23,6 +22,10 @@ class MachinesController < ApplicationController
 
   def index
     @machines = Machine.all
+  end
+
+  def edit
+    @machine = Machine.find(params[:id])
   end
 
   def show_machine
