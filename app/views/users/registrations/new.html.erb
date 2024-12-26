@@ -12,6 +12,7 @@
 
     /* Full-width input fields */
     input[type=text], input[type=password] {
+      width: 100%; 
       margin-top: 5px;
       padding: 15px;
       display: inline-block;
@@ -23,7 +24,7 @@
       background-color: #ddd;
       outline: none;
     }
-    .register-button {
+    .auth-button {
       padding: 16px 20px;
       margin: 8px 0;
       border: none;
@@ -34,17 +35,14 @@
       width: 100%; 
     }
 
-    .register-button:hover {
+    .auth-button:hover {
           background-color: rgb(0, 98, 203);
       }
-      .register-button:active {
+      .auth-button:active {
           background-color: rgb(0, 75, 156);
       }
 
-    /* Add a blue text color to links */
-    a {
-      color: dodgerblue;
-    }
+    
 
     .field-container{
       display: flex; 
@@ -54,7 +52,19 @@
       margin: 5px 0 22px 0;
 
     }
+    .field-with-errors {
+      display: flex;
+      flex-direction: column;
+      width: 100%; 
+    }
 
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 2px; 
+      margin-left: 5px;
+      padding: 0;
+    }
     /* Set a grey background color and center the text of the "sign in" section */
     .signin {
       background-color: #f1f1f1;
@@ -71,6 +81,9 @@
   </style>
 
   <body>
+    <div class="header">
+  <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;" %>
+</div>
     <div style="display: flex;height: 100vh; justify-content:center;
  align-items:center;  flex-direction:column;  
      width: 100%; ">
@@ -81,41 +94,46 @@
         <h1>Регистрация</h1>
        
         <p style="font-size:18px;">Пожалуйста, заполните эту форму, чтобы создать учетную запись.</p>
-        <% if resource.errors.any? %>
-          <div id="error_explanation">
-            <h2>Ошибка не позволила сохранить пользователя:</h2>
-            <ul>
-              <% resource.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
+       
         <div class="field-container" >
           <%= f.label :name, "Имя" %>
           <%= f.text_field :name, placeholder: "Введите ваше имя" %>
+          <% if f.object.errors[:name].any? %>
+            <div class="error-message"><%= f.object.errors[:name].first %></div>
+          <% end %>
         </div>
         <div class="field-container">
           <%= f.label :email, "E-mail" %>
           <%= f.text_field :email, placeholder: "Введите ваш e-mail"  %>
+          <% if f.object.errors[:email].any? %>
+            <div class="error-message"><%= f.object.errors[:email].first %></div>
+          <% end %>
         </div>
         
         <div class="field-container">
           <%= f.label :password, "Пароль" %>
           <%= f.password_field :password, placeholder: "Введите пароль" %>
-          <div class="sublabel">Пароль должен содержать минимум 6 символов.</div>       
+          <% if f.object.errors[:password].any? %>
+            <div class="error-message"><%= f.object.errors[:password].first %></div>
+          <% else %>
+            <div class="sublabel">Пароль должен содержать минимум 6 символов.</div>       
+          <% end %>
         </div>
         <div class="field-container">
           <%= f.label :password_confirmation, "Повторите пароль" %>
           <%= f.password_field :password_confirmation, placeholder: "Введите пароль ещё раз"  %>
-          <div class="sublabel">Введите тот же пароль для подтверждения.</div>
+          <% if f.object.errors[:password_confirmation].any? %>
+            <div class="error-message"><%= f.object.errors[:password_confirmation].first %></div>
+          <% else %>
+            <div class="sublabel">Введите тот же пароль для подтверждения.</div>
+          <% end %>
         </div>
         <div >
-          <%= f.submit "Зарегистрироваться", class: " register-button" %>
+          <%= f.submit "Зарегистрироваться", class: " auth-button" %>
         </div>
         
         <div class="container signin">
-          <p>У вас уже есть учетная запись? <%= link_to "Войти", new_user_session_path, method: :get %>.</p>
+          <p>У вас уже есть учетная запись? <%= link_to "Войти", new_user_session_path, method: :get, style: "color: dodgerblue;" %>.</p>
         </div>
       <% end %>
 

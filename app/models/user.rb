@@ -7,8 +7,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # Убедитесь, что поле name доступно для массового присвоения
-  validates :name, presence: true
-
-  validates :password, length: { minimum: 6, message: "должен содержать минимум 6 символов" }
+  validates :name, presence: { message: "Имя не может быть пустым" }
+  validates :email, presence: { message: "E-mail не может быть пустым" },
+                    uniqueness: { message: "Этот e-mail уже используется" },
+                    format: { with: URI::MailTo::EMAIL_REGEXP, message: "Неверный формат e-mail" }
+  validates :password, presence: { message: "Пароль не может быть пустым" },
+                    length: { minimum: 6, message: "Пароль должен содержать минимум 6 символов" },
+                    confirmation: { message: "Пароли не совпадают" }
+  validates :password_confirmation, presence: { message: "Подтверждение пароля не может быть пустым" }
 end

@@ -43,10 +43,10 @@
           margin-top: 20px;
       }
       .add-button:hover {
-          background-color: rgb(0, 98, 203);
+          background-color:var(--dark-blue-background);
       }
       .add-button:active {
-          background-color: rgb(0, 75, 156);
+          background-color:var(--dark-dark-blue-background);
       }
       .label-container {
           display: flex;
@@ -130,10 +130,10 @@
           color: white;
       }
       .confirm-button:hover {
-          background-color: rgb(0, 98, 203);
+          background-color: var(--dark-blue-background);
       }
       .confirm-button:active {
-          background-color: rgb(0, 75, 156);
+          background-color: var(--dark-dark-blue-background);
       }
       .error-modal {
           display: none;
@@ -163,15 +163,15 @@
           cursor: pointer;
       }
       .error-modal-button:hover {
-          background-color: rgb(0, 98, 203);
+          background-color: var(--dark-blue-background);
       }
       .error-modal-button:active {
-          background-color: rgb(0, 75, 156);
+          background-color: var(--dark-dark-blue-background);
       }
   </style>
 </head>
 <body>
-<div style="position: fixed; top: 0; left: 0; width: 100%; background-color: #007bff; color: white; padding: 10px; text-align: center; margin: 0px; font-size: 25px;">
+<div class="header">
   <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;" %>
 </div>
 <div class="label-container">
