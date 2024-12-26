@@ -5,11 +5,6 @@
   <style>
     * {box-sizing: border-box}
 
-    /* Add padding to containers */
-    .container {
-      padding: 16px;
-    }
-
     /* Full-width input fields */
     input[type=text], input[type=password] {
       width: 100%; 
@@ -24,34 +19,7 @@
       background-color: #ddd;
       outline: none;
     }
-    .auth-button {
-      padding: 16px 20px;
-      margin: 8px 0;
-      border: none;
-      cursor: pointer;
-      background-color: var(--bright-blue);
-      color: white;
-      font-size: 15px;
-      width: 100%; 
-    }
-
-    .auth-button:hover {
-          background-color: rgb(0, 98, 203);
-      }
-      .auth-button:active {
-          background-color: rgb(0, 75, 156);
-      }
-
     
-
-    .field-container{
-      display: flex; 
-      flex-direction: column;
-      width: 100%; 
-      font-size: 18px;
-      margin: 5px 0 22px 0;
-
-    }
     .field-with-errors {
       display: flex;
       flex-direction: column;
@@ -62,19 +30,6 @@
         color: red;
         font-size: 14px;
         margin-top: 2px; 
-      margin-left: 5px;
-      padding: 0;
-    }
-    /* Set a grey background color and center the text of the "sign in" section */
-    .signin {
-      background-color: #f1f1f1;
-      text-align: center;
-    }
-
-    .sublabel {
-      font-size: 13px; /* Размер шрифта для sublabel */
-      color: rgb(100, 100, 100); /* Цвет для sublabel */
-      margin-top: 2px; 
       margin-left: 5px;
       padding: 0;
     }
@@ -132,7 +87,7 @@
           <%= f.submit "Зарегистрироваться", class: " auth-button" %>
         </div>
         
-        <div class="container signin">
+        <div class="clarification-field">
           <p>У вас уже есть учетная запись? <%= link_to "Войти", new_user_session_path, method: :get, style: "color: dodgerblue;" %>.</p>
         </div>
       <% end %>
