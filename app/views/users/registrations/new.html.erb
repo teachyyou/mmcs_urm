@@ -20,19 +20,6 @@
       outline: none;
     }
     
-    .field-with-errors {
-      display: flex;
-      flex-direction: column;
-      width: 100%; 
-    }
-
-    .error-message {
-        color: red;
-        font-size: 14px;
-        margin-top: 2px; 
-      margin-left: 5px;
-      padding: 0;
-    }
   </style>
 
   <body>
@@ -88,7 +75,7 @@
         </div>
         
         <div class="clarification-field">
-          <p>У вас уже есть учетная запись? <%= link_to "Войти", new_user_session_path, method: :get, style: "color: dodgerblue;" %>.</p>
+          <p>У вас уже есть учетная запись? <%= link_to "Войти", new_user_session_path, method: :get, style: "color: dodgerblue;" %></p>
         </div>
       <% end %>
 
