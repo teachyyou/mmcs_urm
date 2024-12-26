@@ -61,7 +61,7 @@
           <%= f.label :email, "E-mail" %>
           <%= f.text_field :email, placeholder: "Введите ваш e-mail"  %>
           <% if f.object.errors[:email].any? %>
-            <div class="error-message"><%= f.object.errors[:email].find{|message| message != "can't be blank"} %></div>
+            <div class="error-message"><%= f.object.errors[:email].find{|message| message != "can't be blank" && message != "is invalid" && message != "has already been taken"} %></div>
           <% end %>
         </div>
         
@@ -78,7 +78,7 @@
           <%= f.label :password_confirmation, "Повторите пароль" %>
           <%= f.password_field :password_confirmation, placeholder: "Введите пароль ещё раз"  %>
           <% if f.object.errors[:password_confirmation].any? %>
-            <div class="error-message"><%= f.object.errors[:password_confirmation].first %></div>
+            <div class="error-message"><%= f.object.errors[:password_confirmation].find {|message| message != "doesn't match Password"} %></div>
           <% else %>
             <div class="sublabel">Введите тот же пароль для подтверждения.</div>
           <% end %>
