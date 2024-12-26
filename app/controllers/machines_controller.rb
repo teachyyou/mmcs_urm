@@ -22,8 +22,11 @@ class MachinesController < ApplicationController
 
   def index
     @machines = Machine.all
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: { machines: @machines } }
+    end
   end
-
   def edit
     @machine = Machine.find(params[:id])
   end

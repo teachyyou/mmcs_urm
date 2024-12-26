@@ -172,8 +172,10 @@
 </head>
 <body>
 <div class="header">
-  <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;" %>
+  <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;", data: { turbo: false } %>
 </div>
+
+
 <div class="label-container">
   <label for="register-count">Количество выходных регистров:</label>
   <select id="register-count">
