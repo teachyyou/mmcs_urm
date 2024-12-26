@@ -9,8 +9,13 @@
 <h1>Welcome to the MMCS URM App!</h1>
 <p>The current version of the <strong>mmcs_urm</strong> gem is: <%= @gem_version %></p>
 <p>Если вы видите этот текст, то у нас получилось подрубить чистый проект и присобачить к нему наш гемчик.</p>
+<%= button_to "Add new", new_machine_path(), method: :get,
+              class: "mt-4 flex w-50 justify-center rounded-md border
+                              border-transparent bg-gray-700 py-2 px-4 text-sm font-medium text-white
+                              shadow-sm hover:bg-gray-900 focus:outline-none
+                               focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" %>
 
-<%= button_to "Homepage", '/urm/index', method: :get%>
+<%= button_to "Homepage", '/machines', method: :get%>
 
 </body>
 </html>

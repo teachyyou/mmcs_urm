@@ -1,10 +1,94 @@
 /*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+* This is a manifest file that'll be compiled into application.css.
+*
+* With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+* application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+* cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+* depending on specificity.
+*
+* Consider organizing styles into separate files for maintainability.
+*/
+:root{
+--bright-blue: #0062cb;
+--light-gray-background: rgb(247, 247, 247);
+--light-blue-background: rgb(158, 201, 246);
+--light-dark-blue-background: rgb(138, 187, 240);
+--dark-blue-background: rgb(0, 80, 165);
+--dark-dark-blue-background: rgb(0, 43, 90);
+}
+
+* {
+font-family: 'Arial', sans-serif; /* Замените 'Arial' на желаемый шрифт */
+}
+
+.base-button{
+font-size: 15px;
+border: 3px solid var(--bright-blue);
+background-color: var(--light-gray-background);
+cursor: pointer;
+}
+.base-button:hover{
+background-color: var(--light-blue-background);
+}
+.base-button:active{
+background-color: var(--light-dark-blue-background);
+}
+
+.header{
+position: fixed; 
+top: 0; 
+left: 0; 
+width: 100%; 
+background-color: var(--bright-blue);
+padding: 10px; 
+text-align: center; 
+margin: 0px; 
+font-size: 25px;
+}
+
+.auth-button {
+padding: 16px 20px;
+margin: 8px 0;
+border: none;
+cursor: pointer;
+background-color: var(--bright-blue);
+color: white;
+font-size: 15px;
+width: 100%; 
+}
+
+.auth-button:hover {
+    background-color: rgb(0, 98, 203);
+}
+.auth-button:active {
+    background-color: rgb(0, 75, 156);
+}
+
+.field-container{
+  display: flex; 
+  flex-direction: column;
+  width: 100%; 
+  font-size: 18px;
+  margin: 5px 0 22px 0;
+
+}
+
+
+/* Set a grey background color and center the text of the "sign in" section */
+.clarification-field {
+  display: flex; 
+  flex-direction: column;
+  background-color: #f1f1f1;
+  text-align: center;
+  padding: 16px;
+}
+
+.sublabel {
+  font-size: 13px; /* Размер шрифта для sublabel */
+  color: rgb(100, 100, 100); /* Цвет для sublabel */
+  margin-top: 2px; 
+  margin-left: 5px;
+  padding: 0;
+}
+
+

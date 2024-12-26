@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+  <style>
+      .home-button {
+          padding: 10px;
+          width: 150px;
+      }
+
+      .machines-container {
+          display: flex;
+          flex-direction: column;
+          align-content: center;
+          justify-content: flex-start;
+          height: 85vh;
+          margin-top: 0;
+          margin-bottom: 20px;
+          overflow-y: scroll;
+      }
+
+      .machines-container.loading {
+          justify-content: center;
+          align-items: center;
+          font-size: 18px;
+          font-weight: bold;
+      }
+
+      .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgb(0,0,0);
+          background-color: rgba(0,0,0,0.4);
+          padding-top: 60px;
+      }
+
+      .modal-content {
+          background-color: #fefefe;
+          margin: 5% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+      }
+
+      .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+      }
+
+      .homepage-header{
+          background-color:var(--bright-blue);
+          color: white;
+          height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          padding: 30px;
+          margin: 0px;
+          font-size: 35px;
+      }
+
+      .description-box{
+          background-color:var(--light-gray-background);
+          min-height: 20vh;
+          border: 3px solid var(--bright-blue);
+      }
+  </style>
+</head>
+<body data-turbo="false">
+<div style="display: flex; height: 100%; width: 100%; top: 0; left: 0; position: fixed; flex-direction:column; align-content: stretch;">
+
+  <div class="homepage-header">
+    <div style="flex-grow: 1; text-align: center;">URM Machines</div>
+    <div style="position: absolute; right: 20px;">
+      <% if user_signed_in? %>
+        <%= button_to "Выйти", destroy_user_session_path, method: :delete, class: 'base-button home-button' %>
+      <% else %>
+        <%= button_to "Регистрация", new_user_registration_path, method: :get, class: 'base-button home-button' %>
+        <%= button_to "Войти", new_user_session_path, method: :get, class: 'base-button home-button' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div style="display: flex; flex-direction:row; ">
+    <div style="width: 50%; height: 100%; border-right: 1px solid #ccc;">
+      <div id="machines-container" class="machines-container loading">Загрузка...</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; width: 50%; padding-left: 20px; margin-top: auto; margin-bottom: auto; min-height: 100vh;">
+      <div style="height: 70%; border-bottom: 1px solid #ccc;">
+        <h1 id="selected-machine-name"></h1>
+        <div class="description-box">
+          <p id="selected-machine-description" style="padding-left: 10px;"></p>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content:space-around;">
+          <button id="run-button" style="margin: 15px;" class='base-button home-button'>Запустить</button>
+          <button id="edit-button" style="margin: 15px; display: none;" class='base-button home-button'>Редактировать</button>
+        </div>
+      </div>
+
+      <div style="height: 30%;">
+        <div style="margin-top: 20px; display: flex; flex-direction: row;
+          justify-content:space-around;">
+          <button id="create-button" class='base-button home-button'>Создать</button>
+          <button id="decode-button" class='base-button home-button'>Раскодировать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Только авторизованные пользователи могут создавать новые машины.</p>
+  </div>
+</div>
+
+<script>
+    let machines = [];
+    let currentUser  = <%= current_user&.id || 'null' %>;
+
+    document.addEventListener("turbo:load", function () {
+        const machinesContainer = document.getElementById('machines-container');
+
+        if (machines.length !== 0) {
+            renderMachines(machines);
+        } else {
+            fetch('/machines.json')
+              .then(response => response.json())
+              .then(data => {
+                  if (data && data.machines && Array.isArray(data.machines)) {
+                      machines = data.machines;
+                      renderMachines(machines);
+                  } else {
+                      machinesContainer.textContent = 'Ошибка загрузки данных';
+                  }
+              })
+              .catch(() => {
+                  machinesContainer.textContent = 'Ошибка загрузки данных';
+              });
+        }
+
+        registerMachineButtons();
+        registerCreateButton();
+        registerEditButton();
+        registerRunButton();
+        registerDecodeButton();
+    });
+
+    function registerCreateButton() {
+        document.getElementById('create-button').onclick = function() {
+            <% if !user_signed_in? %>
+            document.getElementById('myModal').style.display = "block";
+            <% else %>
+            window.location.href = '/machines/new';
+            <% end %>
+        }
+    }
+
+    function registerEditButton() {
+        const editButton = document.getElementById('edit-button');
+        editButton.onclick = function() {
+            const machineName = document.getElementById('selected-machine-name').textContent;
+            if (machineName) {
+                const machineId = machines.find(m => m.name === machineName).id;
+                window.location.href = `/machines/${machineId}/edit`;
+            }
+        }
+    }
+
+
+    function registerRunButton() {
+        const runButton = document.getElementById('run-button');
+        runButton.onclick = function() {
+            const machineName = document.getElementById('selected-machine-name').textContent;
+            if (machineName) {
+                alert(`Запуск машины: ${machineName}`);
+            }
+        }
+    }
+
+
+    function registerDecodeButton() {
+        const decodeButton = document.getElementById('decode-button');
+        decodeButton.onclick = function() {
+            const machineName = document.getElementById('selected-machine-name').textContent;
+            if (machineName) {
+                // Здесь добавьте логику для раскодирования
+                alert(`Раскодирование машины: ${machineName}`);
+            }
+        }
+    }
+
+    // Регистрация кнопки закрытия модального окна
+    document.getElementsByClassName("close")[0].onclick = function() {
+        document.getElementById('myModal').style.display = "none";
+    }
+
+    // Закрытие модального окна при клике вне его
+    window.onclick = function(event) {
+        if (event.target === document.getElementById('myModal')) {
+            document.getElementById('myModal').style.display = "none";
+        }
+    }
+
+    // Функция для обработки кнопок машин
+    function registerMachineButtons() {
+        const machinesContainer = document.getElementById('machines-container');
+        machinesContainer.addEventListener('click', function(event) {
+            if (event.target.classList.contains('show-machine-button')) {
+                const machineId = parseInt(event.target.getAttribute('data-machine-id'));
+                const machine = machines.find(m => m.id === machineId);
+
+                if (machine) {
+                    selectMachine(machine);
+                }
+            }
+        });
+    }
+
+    // Функция для отображения машин
+    function renderMachines(machines) {
+        const machinesContainer = document.getElementById('machines-container');
+        machinesContainer.classList.remove('loading');
+        machinesContainer.innerHTML = '';
+
+        machines.forEach(machine => {
+            const button = document.createElement('button');
+            button.style.padding = '20px';
+            button.style.margin = '5px';
+            button.classList.add('base-button', 'show-machine-button');
+            button.setAttribute('data-machine-id', machine.id);
+            button.textContent = machine.name;
+            machinesContainer.appendChild(button);
+        });
+
+        if (machines.length > 0) {
+            selectMachine(machines[0]);
+        }
+    }
+
+    function selectMachine(machine) {
+        document.getElementById('selected-machine-name').textContent = machine.name;
+        document.getElementById('selected-machine-description').textContent = machine.description;
+
+        const editButton = document.getElementById('edit-button');
+        if (currentUser  && machine.author === currentUser ) {
+            editButton.style.display = 'block';
+        } else {
+            editButton.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
