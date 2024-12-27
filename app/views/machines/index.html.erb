@@ -195,10 +195,11 @@
         runButton.onclick = function() {
             const machineName = document.getElementById('selected-machine-name').textContent;
             if (machineName) {
-                alert(`Запуск машины: ${machineName}`);
+                window.location.href = `/machines/${selectedMachineId}/run`;
             }
         }
     }
+
 
 
     function registerDecodeButton() {

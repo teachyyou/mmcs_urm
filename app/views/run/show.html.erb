@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Запуск машины: <%= @name %></title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+      }
+      .container {
+          display: flex;
+          flex-direction: row;
+          width: 90%;
+          max-width: 1200px;
+          border: 1px solid #ccc;
+          padding: 20px;
+          gap: 20px;
+      }
+      .left-section {
+          flex: 1;
+      }
+      .right-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+      }
+      .instructions {
+          margin-top: 20px;
+          list-style: none;
+          padding: 0;
+      }
+      .instructions li {
+          margin: 5px 0;
+          padding: 10px;
+          background-color: #f9f9f9;
+          border: 1px solid #ddd;
+      }
+      .input-group {
+          display: flex;
+          flex-direction: column;
+          margin-top: 20px;
+      }
+      .input-group label {
+          margin-bottom: 10px;
+      }
+      .input-group input {
+          padding: 10px;
+          font-size: 16px;
+      }
+      .run-button {
+          margin-top: 20px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+      }
+      .loading {
+          font-size: 18px;
+          font-weight: bold;
+          color: #333;
+          text-align: center;
+          margin-top: 20px;
+      }
+      .result {
+          margin-top: 20px;
+          font-size: 18px;
+          color: #333;
+      }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="left-section">
+    <h1><%= @name %></h1>
+    <p><%= @description %></p>
+
+    <ul class="instructions">
+      <% @instructions.each do |instruction| %>
+        <li><%= instruction %></li>
+      <% end %>
+    </ul>
+  </div>
+
+  <div class="right-section">
+    <h2>Введите значения</h2>
+    <% (2..@input_counts + 1).each do |i| %>
+      <div class="input-group">
+        <label for="x<%= i %>">x<%= i %>:</label>
+        <input type="text" id="x<%= i %>" name="x<%= i %>" placeholder="Введите значение...">
+      </div>
+    <% end %>
+
+    <button class="run-button">Запустить</button>
+    <div id="loading" class="loading" style="display: none;">Загрузка...</div>
+    <div id="result" class="result"></div>
+  </div>
+</div>
+<script>
+    document.querySelector('.run-button').onclick = function() {
+        const inputs = {};
+        document.querySelectorAll('.input-group input').forEach(input => {
+            inputs[input.name] = input.value;
+        });
+
+        const data = {
+            machine_id: <%= @machine.id %>,
+            inputs: inputs
+        };
+
+        const loadingElement = document.getElementById('loading');
+        const resultElement = document.getElementById('result');
+        const runButton = document.querySelector('.run-button');
+
+        // Отображаем анимацию загрузки
+        loadingElement.style.display = 'block';
+        resultElement.innerText = '';
+        runButton.disabled = true;
+
+        fetch('/machines/<%= @machine.id %>/run', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                loadingElement.style.display = 'none';
+
+                if (!response.ok) {
+                    if (response.status === 408) {
+                        throw new Error('Время вычисления превысило лимит.');
+                    }
+                    throw new Error('Произошла ошибка сервера.');
+                }
+
+                return response.json();
+            })
+            .then(result => {
+                resultElement.innerText = `Результат: ${result.output}`;
+                runButton.disabled = false;
+
+            })
+            .catch(error => {
+                loadingElement.style.display = 'none';
+
+                if (error.message === 'Время вычисления превысило лимит.') {
+                    resultElement.innerText = 'Время вычисления превысило 5 секунд — похоже, машина зациклилась.';
+                } else {
+                    resultElement.innerText = 'Произошла ошибка при запуске';
+                }
+                runButton.disabled = false;
+
+                console.error('Ошибка:', error);
+            });
+    };
+</script>
+</body>
+</html>

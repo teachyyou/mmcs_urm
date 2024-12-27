@@ -2,7 +2,7 @@ require "urm/machine"
 class MachinesController < ApplicationController
 
   before_action :authenticate_user!, except: [:index, :show_machine]
-  before_action :authorize_machine_author, only: [:edit_machine, :destroy]
+  before_action :authorize_machine_author, only: [:edit, :destroy]
 
   def create
     data = JSON.parse(request.body.read)
@@ -56,7 +56,7 @@ class MachinesController < ApplicationController
       format.json { render json: { machines: @machines } }
     end
   end
-  def edit_machine
+  def edit
 
     @machine = Machine.find(params[:id])
     @instructions = @machine.instructions

@@ -276,6 +276,7 @@
     function confirm() {
         const machineName = document.getElementById('machine-name').value.trim();
         const machineDescription = document.getElementById('machine-description').value.trim();
+        const inputsCount = parseInt(document.getElementById('register-count').value, 10);
 
         const firstInstruction = document.querySelector('.input-field').value;
         if (!firstInstruction) {
@@ -298,6 +299,7 @@
             machine: {
                 name: machineName,
                 description: machineDescription,
+                input_counts: inputsCount,
                 instructions: instructions
             }
         };

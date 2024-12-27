@@ -8,13 +8,19 @@ Rails.application.routes.draw do
 
   put "/machines/:id", to: "machines#update", as: "update_machine"
 
-  resources :machines, only: [:create, :index, :destroy]
+  resources :machines, only: [:create, :index, :update, :destroy]
+
+  resources :machines do
+    member do
+      get "run", to: "run#show"
+      post "run", to: "run#execute"
+    end
+  end
 
   get "/machines/show_machine/:id", to: "machines#show_machine", as: "show_machine"
+  # get "/machines/:id/edit", to: "machines#edit_machine", as: "edit_machine"
 
   devise_for :users, controllers: { registrations: "users/registrations" }
 
-
-  get "/machines/:id/edit", to: "machines#edit_machine", as: "edit_machine"
 
 end
