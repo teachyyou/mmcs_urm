@@ -1,6 +1,9 @@
 require "urm/machine"
 class MachinesController < ApplicationController
 
+  before_action :authenticate_user!, except: [:index, :show_machine]
+  before_action :authorize_machine_author, only: [:edit_machine, :destroy]
+
   def create
     data = JSON.parse(request.body.read)
     puts data
@@ -41,13 +44,8 @@ class MachinesController < ApplicationController
   def destroy
 
     machine = Machine.find(params[:id])
-
-    if machine.author == current_user.id
-      machine.destroy
-      render json: { message: 'Машина успешно удалена.' }, status: :ok
-    else
-      render json: { error: 'У вас нет прав для удаления этой машины.' }, status: :forbidden
-    end
+    machine.destroy
+    redirect_to machines_path
   end
 
 
@@ -59,19 +57,34 @@ class MachinesController < ApplicationController
     end
   end
   def edit_machine
+
     @machine = Machine.find(params[:id])
-
-    if @machine.author != current_user.id
-      redirect_to machines_path
-      return
-    end
-
     @instructions = @machine.instructions
   end
-
-
   def show_machine
     @machine = Machine.find(params[:id])
     render json: { name: @machine.name, description: @machine.description }
   end
+
+  private
+
+  def authenticate_user!
+    unless current_user
+      redirect_to new_user_session_path
+    end
+  end
+
+  def authorize_machine_author
+    machine = Machine.find_by(id: params[:id])
+
+    if machine.nil?
+      redirect_to machines_path and return
+    end
+
+    unless machine.author == current_user.id
+      redirect_to machines_path
+    end
+  end
+
+
 end
