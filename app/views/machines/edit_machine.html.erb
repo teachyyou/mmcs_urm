@@ -43,10 +43,10 @@
           margin-top: 20px;
       }
       .add-button:hover {
-          background-color:var(--dark-blue-background);
+          background-color: var(--dark-blue-background);
       }
       .add-button:active {
-          background-color:var(--dark-dark-blue-background);
+          background-color: var(--dark-dark-blue-background);
       }
       .label-container {
           display: flex;
@@ -189,7 +189,9 @@
     <div class="input-wrapper">
       <span class="input-number"><%= index + 1 %></span>
       <input type="text" class="input-field" placeholder="Введите текст..." value="<%= instruction.sub(/^\d+\.\s*/, '') %>">
-      <button class="remove-button" onclick="removeInputField(this)">-</button>
+      <% if index > 0 %>
+        <button class="remove-button" onclick="removeInputField(this)">-</button>
+      <% end %>
     </div>
   <% end %>
 </div>
@@ -211,7 +213,6 @@
   </div>
 </div>
 
-<!-- Модальное окно для ошибки -->
 <div class="error-modal" id="error-modal">
   <div class="error-modal-content">
     <p>Пожалуйста, введите хотя бы одну инструкцию.</p>
@@ -220,17 +221,14 @@
 </div>
 
 <script>
-    // Функция для открытия модального окна
     function openModal() {
         document.getElementById('modal').style.display = 'flex';
     }
 
-    // Функция для закрытия модального окна
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
     }
 
-    // Функция для добавления нового поля ввода
     function addInputField() {
         const formContainer = document.getElementById('form-container');
         const newInputWrapper = document.createElement('div');
@@ -241,16 +239,19 @@
             <button class="remove-button" onclick="removeInputField(this)">-</button>
         `;
         formContainer.appendChild(newInputWrapper);
+        updateRemoveButtonVisibility();
     }
 
-    // Функция для удаления поля ввода
     function removeInputField(button) {
         const inputWrapper = button.parentElement;
-        inputWrapper.remove();
-        updateInputNumbers();
+        const formContainer = document.getElementById('form-container');
+        if (formContainer.children.length > 1) {
+            inputWrapper.remove();
+            updateInputNumbers();
+            updateRemoveButtonVisibility();
+        }
     }
 
-    // Функция для обновления номеров инструкций
     function updateInputNumbers() {
         const inputWrappers = document.querySelectorAll('.input-wrapper');
         inputWrappers.forEach((wrapper, index) => {
@@ -258,7 +259,20 @@
         });
     }
 
-    // Функция для подтверждения изменений и отправки PUT-запроса
+    function updateRemoveButtonVisibility() {
+        const inputWrappers = document.querySelectorAll('.input-wrapper');
+        inputWrappers.forEach((wrapper, index) => {
+            const removeButton = wrapper.querySelector('.remove-button');
+            if (removeButton) {
+                if (index === 0) {
+                    removeButton.style.display = 'none';
+                } else {
+                    removeButton.style.display = 'inline-block';
+                }
+            }
+        });
+    }
+
     function confirm() {
         const machineName = document.getElementById('machine-name').value.trim();
         const machineDescription = document.getElementById('machine-description').value.trim();
@@ -267,13 +281,12 @@
             return `${index + 1}. ${input.value}`;
         });
 
-
         if (instructions.length === 0) {
             document.getElementById('error-modal').style.display = 'flex';
             return;
         }
 
-        const machineId = <%= @machine.id %>; // Получаем ID машины из Ruby
+        const machineId = <%= @machine.id %>;
         const data = {
             machine: {
                 name: machineName,
@@ -304,7 +317,6 @@
             });
     }
 
-    // Функция для закрытия модального окна с ошибкой
     function closeErrorModal() {
         document.getElementById('error-modal').style.display = 'none';
     }
@@ -312,3 +324,5 @@
 
 </body>
 </html>
+
+Найти еще
