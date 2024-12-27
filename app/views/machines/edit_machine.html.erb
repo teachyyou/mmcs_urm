@@ -277,6 +277,13 @@
         const machineName = document.getElementById('machine-name').value.trim();
         const machineDescription = document.getElementById('machine-description').value.trim();
 
+        const firstInstruction = document.querySelector('.input-field').value;
+        if (!firstInstruction) {
+            closeModal(); // Закрываем основное модальное окно
+            openErrorModal(); // Открываем модальное окно с ошибко  й
+            return; // Прерываем выполнение функции
+        }
+
         const instructions = Array.from(document.querySelectorAll('.input-field')).map((input, index) => {
             return `${index + 1}. ${input.value}`;
         });
@@ -319,6 +326,9 @@
 
     function closeErrorModal() {
         document.getElementById('error-modal').style.display = 'none';
+    }
+    function openErrorModal() {
+        document.getElementById('error-modal').style.display = 'flex';
     }
 </script>
 
