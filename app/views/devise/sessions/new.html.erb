@@ -49,8 +49,6 @@
        html: { method: :post,  style: "width: 30%;"  }) do |f| %>
         <h1>Вход</h1>
        
-        <p style="font-size:18px;">Пожалуйста, заполните эту форму, чтобы войти в свою учетную запись.</p>
-       
         <div class="field-container">
           <%= f.label :email, "E-mail" %>
           <%= f.text_field :email, autofocus: true, autocomplete: "email", placeholder: "Введите ваш e-mail"  %>
@@ -77,7 +75,5 @@
 
       </div>
 
-
-</div>
   </body>
 </html>
