@@ -18,7 +18,6 @@ Rails.application.routes.draw do
   end
 
   get "/machines/show_machine/:id", to: "machines#show_machine", as: "show_machine"
-  # get "/machines/:id/edit", to: "machines#edit_machine", as: "edit_machine"
 
   devise_for :users, controllers: { registrations: "users/registrations" }
 
