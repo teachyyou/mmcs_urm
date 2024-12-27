@@ -3,6 +3,7 @@ class MachinesController < ApplicationController
 
   def create
     data = JSON.parse(request.body.read)
+    puts data
     machine = Machine.new(
       name: data['name'],
       description: data['description'],
@@ -21,14 +22,34 @@ class MachinesController < ApplicationController
 
   def update
     machine = Machine.find(params[:id])
+
+    if machine.author != current_user.id
+      render json: { error: 'У вас нет прав для обновления этой машины.' }, status: :forbidden
+      return
+    end
+
     data = JSON.parse(request.body.read)
+
     if machine.update(data['machine'])
       render json: machine, status: :ok
     else
       render json: { errors: machine.errors.full_messages }, status: :unprocessable_entity
     end
-
   end
+
+
+  def destroy
+
+    machine = Machine.find(params[:id])
+
+    if machine.author == current_user.id
+      machine.destroy
+      render json: { message: 'Машина успешно удалена.' }, status: :ok
+    else
+      render json: { error: 'У вас нет прав для удаления этой машины.' }, status: :forbidden
+    end
+  end
+
 
   def index
     @machines = Machine.all
@@ -38,12 +59,16 @@ class MachinesController < ApplicationController
     end
   end
   def edit_machine
-    puts "gogogo"
     @machine = Machine.find(params[:id])
-    puts "lala"
-    puts @machine.name
+
+    if @machine.author != current_user.id
+      redirect_to machines_path
+      return
+    end
+
     @instructions = @machine.instructions
   end
+
 
   def show_machine
     @machine = Machine.find(params[:id])

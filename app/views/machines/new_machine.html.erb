@@ -290,12 +290,12 @@
         const carDescription = document.getElementById('machine-description').value;
         const registerCount = document.getElementById('register-count').value;
 
-        // Проверка на пустое первое поле
+
         const firstInstruction = document.querySelector('.input-field').value;
         if (!firstInstruction) {
-            closeModal(); // Закрываем основное модальное окно
-            openErrorModal(); // Открываем модальное окно с ошибкой
-            return; // Прерываем выполнение функции
+            closeModal();
+            openErrorModal();
+            return;
         }
 
         const authorName = "<%= current_user.id %>";
@@ -312,14 +312,22 @@
             instructions: instructions
         };
 
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         fetch('/machines', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken // Добавляем CSRF-токен
             },
             body: JSON.stringify(data)
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка запроса: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('Success:', data);
                 window.location.href = '/machines#index';
@@ -330,6 +338,7 @@
 
         closeModal();
     }
+
 </script>
 </body>
 </html>

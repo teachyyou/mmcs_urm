@@ -113,6 +113,7 @@
         <div style="display: flex; flex-direction: row; justify-content:space-around;">
           <button id="run-button" style="margin: 15px;" class='base-button home-button'>Запустить</button>
           <button id="edit-button" style="margin: 15px; display: none;" class='base-button home-button'>Редактировать</button>
+          <button id="delete-button" style="margin: 15px; display: none;" class="base-button home-button">Удалить</button>
         </div>
       </div>
 
@@ -164,6 +165,7 @@
         registerCreateButton();
         registerEditButton();
         registerRunButton();
+        registerDeleteButton();
         registerDecodeButton();
     });
 
@@ -209,6 +211,34 @@
             }
         }
     }
+
+    function registerDeleteButton() {
+        const deleteButton = document.getElementById('delete-button');
+        deleteButton.onclick = function() {
+            const machineName = document.getElementById('selected-machine-name').textContent;
+            if (machineName && confirm(`Вы уверены, что хотите удалить машину "${machineName}"?`)) {
+                fetch(`/machines/${selectedMachineId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
+                  .then(response => {
+                      if (response.ok) {
+                          machines = machines.filter(machine => machine.id !== selectedMachineId);
+                          renderMachines(machines);
+                          alert(`Машина "${machineName}" удалена.`);
+                      } else {
+                          alert('Ошибка при удалении машины.');
+                      }
+                  })
+                  .catch(() => {
+                      alert('Ошибка при удалении машины.');
+                  });
+            }
+        }
+    }
+
 
     // Регистрация кнопки закрытия модального окна
     document.getElementsByClassName("close")[0].onclick = function() {
@@ -263,10 +293,13 @@
         document.getElementById('selected-machine-description').textContent = machine.description;
         selectedMachineId = machine.id
         const editButton = document.getElementById('edit-button');
+        const deleteButton = document.getElementById('delete-button');
         if (currentUser  && machine.author === currentUser ) {
             editButton.style.display = 'block';
+            deleteButton.style.display = 'block';
         } else {
             editButton.style.display = 'none';
+            deleteButton.style.display = 'none';
         }
         console.log(selectedMachineId)
     }
