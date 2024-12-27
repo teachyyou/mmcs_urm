@@ -137,6 +137,7 @@
 <script>
     let machines = [];
     let currentUser  = <%= current_user&.id || 'null' %>;
+    let selectedMachineId = 0
 
     document.addEventListener("turbo:load", function () {
         const machinesContainer = document.getElementById('machines-container');
@@ -181,8 +182,7 @@
         editButton.onclick = function() {
             const machineName = document.getElementById('selected-machine-name').textContent;
             if (machineName) {
-                const machineId = machines.find(m => m.name === machineName).id;
-                window.location.href = `/machines/${machineId}/edit`;
+                window.location.href = `/machines/${selectedMachineId}/edit`;
             }
         }
     }
@@ -261,13 +261,14 @@
     function selectMachine(machine) {
         document.getElementById('selected-machine-name').textContent = machine.name;
         document.getElementById('selected-machine-description').textContent = machine.description;
-
+        selectedMachineId = machine.id
         const editButton = document.getElementById('edit-button');
         if (currentUser  && machine.author === currentUser ) {
             editButton.style.display = 'block';
         } else {
             editButton.style.display = 'none';
         }
+        console.log(selectedMachineId)
     }
 </script>
 

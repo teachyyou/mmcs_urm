@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Редактирование Машины</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+      }
+      .form-container {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          max-height: 600px;
+          overflow-y: auto;
+          width: 1000px;
+          border: 1px solid #ccc;
+          padding: 10px;
+      }
+      .input-field {
+          width: 500px;
+          height: 40px;
+          margin: 10px 0;
+          padding-left: 5px;
+          font-size: 16px;
+      }
+      .add-button {
+          width: 50px;
+          height: 50px;
+          border: none;
+          border-radius: 50%;
+          background-color: var(--bright-blue);
+          color: white;
+          font-size: 24px;
+          cursor: pointer;
+          margin-top: 20px;
+      }
+      .add-button:hover {
+          background-color:var(--dark-blue-background);
+      }
+      .add-button:active {
+          background-color:var(--dark-dark-blue-background);
+      }
+      .label-container {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+      }
+      .input-wrapper {
+          display: flex;
+          align-items: center;
+          margin: 5px 0;
+      }
+      .input-number {
+          width: 20px;
+          margin-right: 10px;
+      }
+      .remove-button {
+          width: 30px;
+          height: 30px;
+          border: none;
+          border-radius: 50%;
+          background-color: rgb(255, 0, 111);
+          color: white;
+          font-size: 20px;
+          cursor: pointer;
+          margin-left: 10px;
+      }
+      .remove-button:hover {
+          background-color: rgb(171, 0, 74);
+      }
+      .remove-button:active {
+          background-color: rgb(108, 0, 47);
+      }
+      .save-button {
+          margin-left: 400px;
+          padding: 10px 20px;
+          cursor: pointer;
+      }
+      .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          justify-content: center;
+          align-items: center;
+      }
+      .modal-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          width: 400px;
+      }
+      .modal-input {
+          width: 380px;
+          margin: 10px 0;
+          padding: 10px;
+          font-size: 16px;
+      }
+      .modal-button {
+          margin: 5px;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      .cancel-button {
+          margin-right: 150px;
+          background-color: rgb(255, 0, 111);
+          color: white;
+      }
+      .cancel-button:hover {
+          background-color: rgb(171, 0, 74);
+      }
+      .cancel-button:active {
+          background-color: rgb(108, 0, 47);
+      }
+      .confirm-button {
+          background-color: var(--bright-blue);
+          color: white;
+      }
+      .confirm-button:hover {
+          background-color: var(--dark-blue-background);
+      }
+      .confirm-button:active {
+          background-color: var(--dark-dark-blue-background);
+      }
+      .error-modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          justify-content: center;
+          align-items: center;
+      }
+      .error-modal-content {
+          background-color: white;
+          padding: 20px;
+          border-radius: 5px;
+          width: 300px;
+          text-align: center;
+      }
+      .error-modal-button {
+          margin-top: 10px;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          background-color: var(--bright-blue);
+          color: white;
+          cursor: pointer;
+      }
+      .error-modal-button:hover {
+          background-color: var(--dark-blue-background);
+      }
+      .error-modal-button:active {
+          background-color: var(--dark-dark-blue-background);
+      }
+  </style>
+</head>
+<body>
+<div class="header">
+  <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;", data: { turbo: false } %>
+</div>
+
+<div class="label-container">
+  <label for="register-count">Количество выходных регистров:</label>
+  <select id="register-count">
+    <option value="1" <%= 'selected' if @machine.input_counts == 1 %>>1</option>
+    <option value="2" <%= 'selected' if @machine.input_counts == 2 %>>2</option>
+    <option value="3" <%= 'selected' if @machine.input_counts == 3 %>>3</option>
+  </select>
+</div>
+
+<div class="form-container" id="form-container">
+  <% @instructions.each_with_index do |instruction, index| %>
+    <div class="input-wrapper">
+      <span class="input-number"><%= index + 1 %></span>
+      <input type="text" class="input-field" placeholder="Введите текст..." value="<%= instruction.sub(/^\d+\.\s*/, '') %>">
+      <button class="remove-button" onclick="removeInputField(this)">-</button>
+    </div>
+  <% end %>
+</div>
+
+<div style="display: flex; align-items: center;">
+  <button class="add-button" id="add-button" onclick="addInputField()">+</button>
+  <button class="base-button save-button" onclick="openModal()">Сохранить</button>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Введите информацию</h3>
+    <input type="text" class="modal-input" placeholder="Название Машины" id="machine-name" value="<%= @machine.name %>">
+    <textarea class="modal-input" placeholder="Описание" id="machine-description"><%= @machine.description %></textarea>
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="modal-button cancel-button" onclick="closeModal()">✖ Отмена</button>
+      <button class="modal-button confirm-button" onclick="confirm()">✔ Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно для ошибки -->
+<div class="error-modal" id="error-modal">
+  <div class="error-modal-content">
+    <p>Пожалуйста, введите хотя бы одну инструкцию.</p>
+    <button class="error-modal-button" onclick="closeErrorModal()">Закрыть</button>
+  </div>
+</div>
+
+<script>
+    // Функция для открытия модального окна
+    function openModal() {
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    // Функция для закрытия модального окна
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    // Функция для добавления нового поля ввода
+    function addInputField() {
+        const formContainer = document.getElementById('form-container');
+        const newInputWrapper = document.createElement('div');
+        newInputWrapper.className = 'input-wrapper';
+        newInputWrapper.innerHTML = `
+            <span class="input-number">${formContainer.children.length + 1}</span>
+            <input type="text" class="input-field" placeholder="Введите текст...">
+            <button class="remove-button" onclick="removeInputField(this)">-</button>
+        `;
+        formContainer.appendChild(newInputWrapper);
+    }
+
+    // Функция для удаления поля ввода
+    function removeInputField(button) {
+        const inputWrapper = button.parentElement;
+        inputWrapper.remove();
+        updateInputNumbers();
+    }
+
+    // Функция для обновления номеров инструкций
+    function updateInputNumbers() {
+        const inputWrappers = document.querySelectorAll('.input-wrapper');
+        inputWrappers.forEach((wrapper, index) => {
+            wrapper.querySelector('.input-number').textContent = index + 1;
+        });
+    }
+
+    // Функция для подтверждения изменений и отправки PUT-запроса
+    function confirm() {
+        const machineName = document.getElementById('machine-name').value.trim();
+        const machineDescription = document.getElementById('machine-description').value.trim();
+
+        const instructions = Array.from(document.querySelectorAll('.input-field')).map((input, index) => {
+            return `${index + 1}. ${input.value}`;
+        });
+
+
+        if (instructions.length === 0) {
+            document.getElementById('error-modal').style.display = 'flex';
+            return;
+        }
+
+        const machineId = <%= @machine.id %>; // Получаем ID машины из Ruby
+        const data = {
+            machine: {
+                name: machineName,
+                description: machineDescription,
+                instructions: instructions
+            }
+        };
+
+        fetch(`/machines/${machineId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    closeModal();
+                    window.location.href = '/'
+                } else {
+                    alert('Ошибка при сохранении машины.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке данных.');
+            });
+    }
+
+    // Функция для закрытия модального окна с ошибкой
+    function closeErrorModal() {
+        document.getElementById('error-modal').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

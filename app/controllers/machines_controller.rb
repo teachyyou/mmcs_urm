@@ -1,7 +1,6 @@
 require "urm/machine"
 class MachinesController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, only: [:create]
   def create
     data = JSON.parse(request.body.read)
     machine = Machine.new(
@@ -14,10 +13,21 @@ class MachinesController < ApplicationController
 
 
     if machine.save
-      render json: { message: 'Machine created successfully', machine: machine }, status: :created
+      render json: machine, status: :created
     else
       render json: { errors: machine.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def update
+    machine = Machine.find(params[:id])
+    data = JSON.parse(request.body.read)
+    if machine.update(data['machine'])
+      render json: machine, status: :ok
+    else
+      render json: { errors: machine.errors.full_messages }, status: :unprocessable_entity
+    end
+
   end
 
   def index
@@ -27,8 +37,12 @@ class MachinesController < ApplicationController
       format.json { render json: { machines: @machines } }
     end
   end
-  def edit
+  def edit_machine
+    puts "gogogo"
     @machine = Machine.find(params[:id])
+    puts "lala"
+    puts @machine.name
+    @instructions = @machine.instructions
   end
 
   def show_machine
