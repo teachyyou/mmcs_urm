@@ -92,3 +92,9 @@ width: 100%;
 }
 
 
+.highlight {
+  background-color: rgb(224, 224, 224); /* Цвет фона */
+  padding: 1px 4px; 
+  border-radius: 2px; 
+}
+

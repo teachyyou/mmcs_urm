@@ -8,6 +8,7 @@
       .home-button {
           padding: 10px;
           width: 150px;
+          margin-bottom: 5px;
       }
 
       .machines-container {
@@ -43,11 +44,12 @@
       }
 
       .modal-content {
-          background-color: #fefefe;
-          margin: 5% auto;
-          padding: 20px;
-          border: 1px solid #888;
-          width: 80%;
+        background-color: #fefefe;          
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        margin: 15% auto;
+          
       }
 
       .close {
@@ -67,7 +69,7 @@
       .homepage-header{
           background-color:var(--bright-blue);
           color: white;
-          height: 80px;
+          height: auto;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -81,35 +83,18 @@
           background-color:var(--light-gray-background);
           min-height: 20vh;
           border: 3px solid var(--bright-blue);
+          margin-right: 30px;
       }
 
       .decode-section h4 {
           margin-top: 0;
       }
-      .close {
-          position: absolute;
-          right: 15px;
-          top: 10px;
-          font-size: 24px;
-          cursor: pointer;
-      }
 
-      .close {
-          position: absolute;
-          top: 10px;
-          right: 15px;
-          font-size: 24px;
-          font-weight: bold;
-          color: #aaa;
-          cursor: pointer;
+      .modal-button{
+        padding: 10px;
+        margin-bottom: 5px;
       }
-
-      .close:hover,
-      .close:focus {
-          color: #000;
-          text-decoration: none;
-      }
-
+      
 
 
   </style>
@@ -119,7 +104,7 @@
 
   <div class="homepage-header">
     <div style="flex-grow: 1; text-align: center;">URM Machines</div>
-    <div style="position: absolute; right: 20px;">
+    <div style="position: absolute; right: 20px; height:auto;">
       <% if user_signed_in? %>
         <%= button_to "Выйти", destroy_user_session_path, method: :delete, class: 'base-button home-button' %>
       <% else %>
@@ -128,23 +113,6 @@
       <% end %>
     </div>
   </div>
-
-  <div id="decode-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close" onclick="closeDecodeModal()">&times;</span>
-      <h3>Раскодирование машины</h3>
-      <textarea id="encoded-instructions" placeholder="Введите закодированные числа, разделённые запятыми" style="width: 100%; height: 80px;"></textarea>
-      <button class="modal-button confirm-button" onclick="decodeInstructions()">Раскодировать</button>
-      <div id="decode-instructions-result" style="margin-top: 10px; font-size: 16px;"></div>
-    </div>
-  </div>
-
-
-
-
-
-
-
 
 
   <div style="display: flex; flex-direction:row; ">
@@ -182,6 +150,17 @@
     <p>Только авторизованные пользователи могут создавать новые машины.</p>
   </div>
 </div>
+
+  <div id="decode-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Раскодирование машины</h3>
+      <textarea id="encoded-instructions" placeholder="Введите закодированные числа, разделённые запятыми" style="width: 100%; height: 80px;"></textarea>
+      <button class="base-button modal-button" onclick="decodeInstructions()">Раскодировать</button>
+      <div id="decode-instructions-result" style="margin-top: 10px; font-size: 16px;"></div>
+    </div>
+  </div>
+
 
 <script>
     let machines = [];
@@ -251,22 +230,11 @@
 
 
     function registerDecodeButton() {
-        const decodeButton = document.getElementById('decode-button');
-        decodeButton.onclick = function () {
-            const machineName = document.getElementById('selected-machine-name').textContent;
-            if (machineName) {
-                openDecodeModal(machineName);
-            }
-        };
+         document.getElementById('decode-button').onclick = function() {
+            document.getElementById('decode-modal').style.display = "block";
+        }
+       
     }
-
-    function openDecodeModal(machineName) {
-        const modal = document.getElementById('decode-modal');
-        const titleElement = modal.querySelector('h3');
-        titleElement.textContent = `Раскодирование инструкций`;
-        modal.style.display = 'block';
-    }
-
 
     function registerDeleteButton() {
         const deleteButton = document.getElementById('delete-button');
@@ -301,22 +269,13 @@
         document.getElementById('myModal').style.display = "none";
     }
 
-    document.getElementById('decode-button').onclick = function () {
-        document.getElementById('decode-modal').style.display = 'block';
-    };
-
-    function closeDecodeModal() {
-        const modal = document.getElementById("decode-modal");
-        if (modal) {
-            modal.style.display = "none";
-        }
+    // Регистрация кнопки закрытия модального окна
+    document.getElementsByClassName("close")[1].onclick = function() {
+        document.getElementById("decode-modal").style.display = "none";
     }
 
-    window.onclick = function (event) {
-        const modal = document.getElementById("decode-modal");
-        if (event.target === modal) {
-            closeDecodeModal();
-        }
+    document.getElementById('decode-button').onclick = function () {
+        document.getElementById('decode-modal').style.display = 'block';
     };
 
     function decodeInstructions() {
@@ -360,6 +319,9 @@
     window.onclick = function(event) {
         if (event.target === document.getElementById('myModal')) {
             document.getElementById('myModal').style.display = "none";
+        }
+        if (event.target === document.getElementById('decode-modal')) {
+            document.getElementById('decode-modal').style.display = "none";
         }
     }
 
