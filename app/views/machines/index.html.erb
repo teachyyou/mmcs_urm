@@ -256,7 +256,7 @@
 
     function registerDeleteButton() {
         const deleteButton = document.getElementById('delete-button');
-        deleteButton.onclick = function() {
+            deleteButton.onclick = function() {
             const machineName = document.getElementById('selected-machine-name').textContent;
             if (machineName && confirm(`Вы уверены, что хотите удалить машину "${machineName}"?`)) {
                 fetch(`/machines/${selectedMachineId}`, {
@@ -266,19 +266,14 @@
                     }
                 })
                   .then(response => {
-                      if (response.ok) {
-                          machines = machines.filter(machine => machine.id !== selectedMachineId);
-                          renderMachines(machines);
-                          alert(`Машина "${machineName}" удалена.`);
-                      } else {
-                          alert('Ошибка при удалении машины.');
-                      }
+                    machines = machines.filter(machine => machine.id !== selectedMachineId);
+                    renderMachines(machines);
                   })
                   .catch(() => {
                       alert('Ошибка при удалении машины.');
                   });
             }
-        }
+    }
     }
 
 
