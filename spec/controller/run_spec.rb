@@ -46,7 +46,7 @@ RSpec.describe RunController, type: :controller do
     end
 
     it "returns an error if inputs are invalid" do
-      post :execute, params: { id: machine.id, inputs: { x1: "invalid", x2: -1 } }
+      post :execute, params: { id: valid_machine.id, inputs: { x1: "invalid", x2: -1 } }
       expect(response).to have_http_status(:unprocessable_entity)
       expect(JSON.parse(response.body)["error"]).to include("Входные данные должны быть целыми числами >= 0.")
     end
