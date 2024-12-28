@@ -63,7 +63,7 @@ test:
   <<: *default
   database: test_database
   username: postgres
-  password:
+  password: postgres
   host: localhost
 
 # As with config/credentials.yml, you never want to store sensitive information,
