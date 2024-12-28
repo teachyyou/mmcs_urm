@@ -6,7 +6,6 @@
 
     def create
       data = JSON.parse(request.body.read)
-      puts data
       machine = Machine.new(
         name: data['name'],
         description: data['description'],

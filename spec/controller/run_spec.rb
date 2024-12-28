@@ -46,10 +46,11 @@ RSpec.describe RunController, type: :controller do
     end
 
     it "returns an error if inputs are invalid" do
-      post :execute, params: { id: valid_machine.id, inputs: { "x2" => "invalid", "x3" => 2 } }
+      post :execute, params: { id: machine.id, inputs: { x1: "invalid", x2: -1 } }
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)["error"]).to include("Ошибка выполнения")
+      expect(JSON.parse(response.body)["error"]).to include("Входные данные должны быть целыми числами >= 0.")
     end
+
 
     it "returns a timeout error for an infinite loop" do
       post :execute, params: { id: infinite_machine.id, inputs: { "x2" => 9, "x3" => 0 } }
