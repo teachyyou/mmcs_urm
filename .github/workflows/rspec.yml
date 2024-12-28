@@ -35,15 +35,19 @@ jobs:
 
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h localhost -p 5432 -U postgres; do
+          sleep 10
+          until pg_isready -h 127.0.0.1 -p 5432 -U postgres; do
             echo "Waiting for PostgreSQL..."
             sleep 1
           done
 
+      - name: Check PostgreSQL state
+        run: docker ps
+
       - name: Set up database
         run: |
-          bin/rails db:create RAILS_ENV=test
-          bin/rails db:schema:load RAILS_ENV=test
+          bin/rails db:create RAILS_ENV=test || echo "Failed to create database"
+          bin/rails db:schema:load RAILS_ENV=test || echo "Failed to load schema"
 
       - name: Run tests
         run: bundle exec rspec
