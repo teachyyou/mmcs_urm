@@ -5,6 +5,9 @@ Rails.application.routes.draw do
 
   get "/machines/new", to: "machines#new_machine", as: "new_machine"
 
+  post "/decode", to: "decode#execute"
+
+
 
   put "/machines/:id", to: "machines#update", as: "update_machine"
 

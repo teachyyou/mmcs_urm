@@ -82,6 +82,36 @@
           min-height: 20vh;
           border: 3px solid var(--bright-blue);
       }
+
+      .decode-section h4 {
+          margin-top: 0;
+      }
+      .close {
+          position: absolute;
+          right: 15px;
+          top: 10px;
+          font-size: 24px;
+          cursor: pointer;
+      }
+
+      .close {
+          position: absolute;
+          top: 10px;
+          right: 15px;
+          font-size: 24px;
+          font-weight: bold;
+          color: #aaa;
+          cursor: pointer;
+      }
+
+      .close:hover,
+      .close:focus {
+          color: #000;
+          text-decoration: none;
+      }
+
+
+
   </style>
 </head>
 <body data-turbo="false">
@@ -98,6 +128,24 @@
       <% end %>
     </div>
   </div>
+
+  <div id="decode-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeDecodeModal()">&times;</span>
+      <h3>Раскодирование машины</h3>
+      <textarea id="encoded-instructions" placeholder="Введите закодированные числа, разделённые запятыми" style="width: 100%; height: 80px;"></textarea>
+      <button class="modal-button confirm-button" onclick="decodeInstructions()">Раскодировать</button>
+      <div id="decode-instructions-result" style="margin-top: 10px; font-size: 16px;"></div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
 
   <div style="display: flex; flex-direction:row; ">
     <div style="width: 50%; height: 100%; border-right: 1px solid #ccc;">
@@ -204,14 +252,21 @@
 
     function registerDecodeButton() {
         const decodeButton = document.getElementById('decode-button');
-        decodeButton.onclick = function() {
+        decodeButton.onclick = function () {
             const machineName = document.getElementById('selected-machine-name').textContent;
             if (machineName) {
-                // Здесь добавьте логику для раскодирования
-                alert(`Раскодирование машины: ${machineName}`);
+                openDecodeModal(machineName);
             }
-        }
+        };
     }
+
+    function openDecodeModal(machineName) {
+        const modal = document.getElementById('decode-modal');
+        const titleElement = modal.querySelector('h3');
+        titleElement.textContent = `Раскодирование машины: ${machineName}`;
+        modal.style.display = 'block';
+    }
+
 
     function registerDeleteButton() {
         const deleteButton = document.getElementById('delete-button');
@@ -246,7 +301,62 @@
         document.getElementById('myModal').style.display = "none";
     }
 
-    // Закрытие модального окна при клике вне его
+    document.getElementById('decode-button').onclick = function () {
+        document.getElementById('decode-modal').style.display = 'block';
+    };
+
+    function closeDecodeModal() {
+        const modal = document.getElementById("decode-modal");
+        if (modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById("decode-modal");
+        if (event.target === modal) {
+            closeDecodeModal();
+        }
+    };
+
+    function decodeInstructions() {
+        const encodedInstructionsInput = document.getElementById('encoded-instructions').value.trim();
+        if (!encodedInstructionsInput) {
+            alert('Пожалуйста, введите закодированные числа для инструкций.');
+            return;
+        }
+
+        const encodedInstructions = encodedInstructionsInput
+          .split(',')
+          .map(num => num.trim())
+          .filter(num => !isNaN(num));
+
+        if (encodedInstructions.length === 0) {
+            alert('Некорректный формат данных для инструкций. Убедитесь, что ввели только числа, разделённые запятыми.');
+            return;
+        }
+
+        const resultElement = document.getElementById('decode-instructions-result');
+        resultElement.innerText = 'Загрузка...';
+
+        fetch('/decode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ encoded_machine: encodedInstructions })
+        })
+          .then(response => response.json())
+          .then(result => {
+              resultElement.innerText = `Инструкции:\n${result.instructions.join('\n')}`;
+          })
+          .catch(error => {
+              resultElement.innerText = 'Произошла ошибка при раскодировании инструкций.';
+              console.error('Ошибка:', error);
+          });
+    }
+
     window.onclick = function(event) {
         if (event.target === document.getElementById('myModal')) {
             document.getElementById('myModal').style.display = "none";
