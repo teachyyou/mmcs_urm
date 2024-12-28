@@ -1,3 +1,7 @@
+
+require "urm/machine"
+require "urm/coder"
+
 class DecodeController < ApplicationController
   def execute
     encoded_machine = params[:encoded_machine]
