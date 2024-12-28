@@ -12,13 +12,38 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: test_database
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ""
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.3'
+
       - name: Install dependencies
         run: bundle install
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 1
+          done
+
+      - name: Set up database
+        run: |
+          bin/rails db:create RAILS_ENV=test
+          bin/rails db:schema:load RAILS_ENV=test
+
       - name: Run tests
         run: bundle exec rspec
