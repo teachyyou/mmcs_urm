@@ -48,7 +48,8 @@
       }
       
       .modal-button {
-        margin: 5px;
+        margin: 25px 5px 5px;
+
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
@@ -100,7 +101,13 @@
           margin-top: 0;
       }
 
-      
+      .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 2px; 
+        margin-left: 5px;
+        padding: 0;
+        }
 
 
   </style>
@@ -163,9 +170,12 @@
       <h3>Раскодирование машины</h3>
       <textarea id="encoded-instructions" 
       placeholder="Введите закодированные числа, разделённые запятыми" 
-      style="padding: 10px;font-size: 16px;width: 97%; height: 100px;margin: 20px 0;"></textarea>
+      style="padding: 10px;font-size: 16px;width: 97%; height: 100px;margin: 20px 0 0 0;"></textarea>
+        <div id="decode-error" class="error-message"></div>
+      
       <button class="base-button modal-button" onclick="decodeInstructions()">Раскодировать</button>
-      <div id="decode-instructions-result" style="margin-top: 10px; font-size: 16px;"></div>
+      <div id="decode-instructions-result" style="margin-top: 10px; font-size: 16px;">
+      </div>
     </div>
   </div>
 
@@ -288,8 +298,9 @@
 
     function decodeInstructions() {
         const encodedInstructionsInput = document.getElementById('encoded-instructions').value.trim();
+        document.getElementById('decode-error').textContent = ""
         if (!encodedInstructionsInput) {
-            alert('Пожалуйста, введите закодированные числа для инструкций.');
+            document.getElementById('decode-error').textContent ='Пожалуйста, введите закодированные числа для инструкций.';
             return;
         }
 
@@ -299,7 +310,7 @@
           .filter(num => !isNaN(num));
 
         if (encodedInstructions.length === 0) {
-            alert('Некорректный формат данных для инструкций. Убедитесь, что ввели только числа, разделённые запятыми.');
+            document.getElementById('decode-error').textContent ='Некорректный формат данных для инструкций. Убедитесь, что ввели только числа, разделённые запятыми.';
             return;
         }
 
@@ -319,7 +330,8 @@
               resultElement.innerText = `Инструкции:\n${result.instructions.join('\n')}`;
           })
           .catch(error => {
-              resultElement.innerText = 'Произошла ошибка при раскодировании инструкций.';
+              document.getElementById('decode-error').textContent = 'Произошла ошибка при раскодировании инструкций.';
+              resultElement.innerText =  `Инструкции:\n${result.instructions.join('\n')}`;
               console.error('Ошибка:', error);
           });
     }
