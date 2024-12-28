@@ -1,4 +1,18 @@
 class RunController < ApplicationController
+
+  def show
+    @machine = Machine.find(params[:id])
+
+    if @machine.nil?
+      redirect_to machines_path and return
+    end
+
+    @name = @machine.name
+    @description = @machine.description
+    @instructions = @machine.instructions.presence || []
+    @input_counts = @machine.input_counts.to_i
+  end
+
   def execute
     machine = Machine.find_by(id: params[:id])
 
@@ -14,7 +28,6 @@ class RunController < ApplicationController
       return
     end
 
-    # Объявляем input_array вне блока begin...rescue
     input_array = inputs.values.map do |val|
       Integer(val) rescue nil
     end
