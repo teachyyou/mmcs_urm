@@ -278,17 +278,20 @@
         const machineDescription = document.getElementById('machine-description').value.trim();
         const inputsCount = parseInt(document.getElementById('register-count').value, 10);
 
-        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value.trim());
 
-        // Проверка инструкций
+        const instructions = Array.from(document.querySelectorAll('.input-field'))
+            .map((input, index) => `${index + 1}. ${input.value.trim()}`);
+
+
         const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
-
-        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction));
+        const invalidInstructions = instructions.filter(instruction =>
+            !instructionRegex.test(instruction.replace(/^\d+\.\s*/, '').trim())
+        );
 
         if (invalidInstructions.length > 0) {
-            closeModal(); // Закрываем основное модальное окно
+            closeModal();
             document.getElementById('error-message').textContent = "Некорректная инструкция: " + invalidInstructions.join(", ");
-            openErrorModal(); // Открываем модальное окно с ошибкой
+            openErrorModal();
             return;
         }
 
@@ -313,7 +316,7 @@
             .then(response => {
                 if (response.ok) {
                     closeModal();
-                    window.location.href = '/'
+                    window.location.href = '/';
                 } else {
                     alert('Ошибка при сохранении машины.');
                 }
@@ -323,6 +326,7 @@
                 alert('Произошла ошибка при отправке данных.');
             });
     }
+
 
     function closeErrorModal() {
         document.getElementById('error-modal').style.display = 'none';

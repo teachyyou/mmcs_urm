@@ -286,15 +286,16 @@
     }
 
     function confirm() {
-        const carName = document.getElementById('machine-name').value;
-        const carDescription = document.getElementById('machine-description').value;
+        const machineName = document.getElementById('machine-name').value;
+        const machineDescription = document.getElementById('machine-description').value;
         const registerCount = document.getElementById('register-count').value;
 
-        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value);
+        const instructions = Array.from(document.querySelectorAll('.input-field'))
+            .map((input, index) => `${index + 1}. ${input.value}`); // Добавляем номера к инструкциям
 
         // Проверка инструкций
         const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
-        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction.trim()));
+        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction.replace(/^\d+\.\s*/, '').trim()));
 
         if (invalidInstructions.length > 0) {
             closeModal();
@@ -305,8 +306,8 @@
         const authorName = "<%= current_user.id %>";
 
         const data = {
-            name: carName,
-            description: carDescription,
+            name: machineName,
+            description: machineDescription,
             author: authorName,
             input_counts: registerCount,
             instructions: instructions
@@ -338,6 +339,7 @@
 
         closeModal();
     }
+
 
 </script>
 </body>
