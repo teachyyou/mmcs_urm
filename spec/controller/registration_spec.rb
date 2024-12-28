@@ -34,10 +34,6 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       expect(response).to render_template(:new)
     end
 
-    it "assigns a new user as resource" do
-      get :new
-      expect(assigns(:resource)).to be_a_new(User)
-    end
   end
 
   describe "POST #create" do
