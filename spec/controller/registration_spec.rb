@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Users::RegistrationsController, type: :controller do
   include Devise::Test::ControllerHelpers
+  include Rails::Controller::Testing::TemplateAssertions
+  include Rails::Controller::Testing::Integration
+  include Rails::Controller::Testing::TestProcess
 
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
