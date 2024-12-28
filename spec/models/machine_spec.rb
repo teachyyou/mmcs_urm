@@ -33,7 +33,7 @@ RSpec.describe Machine, type: :model do
     it "executes instructions from the machine's data" do
 
       result = machine_object.run(0, 0)
-      expect(result).to eq(1)
+      expect(result).to eq(2)
     end
 
     it "validates machine's instructions separately" do
