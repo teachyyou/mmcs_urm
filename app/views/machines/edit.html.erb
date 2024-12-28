@@ -215,7 +215,7 @@
 
 <div class="error-modal" id="error-modal">
   <div class="error-modal-content">
-    <p>Пожалуйста, введите хотя бы одну инструкцию.</p>
+    <p id="error-message">Пожалуйста, введите хотя бы одну корректную инструкцию.</p>
     <button class="error-modal-button" onclick="closeErrorModal()">Закрыть</button>
   </div>
 </div>
@@ -278,19 +278,17 @@
         const machineDescription = document.getElementById('machine-description').value.trim();
         const inputsCount = parseInt(document.getElementById('register-count').value, 10);
 
-        const firstInstruction = document.querySelector('.input-field').value;
-        if (!firstInstruction) {
+        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value.trim());
+
+        // Проверка инструкций
+        const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
+
+        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction));
+
+        if (invalidInstructions.length > 0) {
             closeModal(); // Закрываем основное модальное окно
-            openErrorModal(); // Открываем модальное окно с ошибко  й
-            return; // Прерываем выполнение функции
-        }
-
-        const instructions = Array.from(document.querySelectorAll('.input-field')).map((input, index) => {
-            return `${index + 1}. ${input.value}`;
-        });
-
-        if (instructions.length === 0) {
-            document.getElementById('error-modal').style.display = 'flex';
+            document.getElementById('error-message').textContent = "Некорректная инструкция: " + invalidInstructions.join(", ");
+            openErrorModal(); // Открываем модальное окно с ошибкой
             return;
         }
 
@@ -329,6 +327,7 @@
     function closeErrorModal() {
         document.getElementById('error-modal').style.display = 'none';
     }
+
     function openErrorModal() {
         document.getElementById('error-modal').style.display = 'flex';
     }

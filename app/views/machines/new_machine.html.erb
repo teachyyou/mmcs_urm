@@ -175,7 +175,6 @@
   <%= link_to "URM Machines", root_path, style: "color: white; text-decoration: none;", data: { turbo: false } %>
 </div>
 
-
 <div class="label-container">
   <label for="register-count">Количество выходных регистров:</label>
   <select id="register-count">
@@ -210,7 +209,7 @@
 <!-- Модальное окно для ошибки -->
 <div class="error-modal" id="error-modal">
   <div class="error-modal-content">
-    <p>Пожалуйста, введите хотя бы одну инструкцию.</p>
+    <p id="error-message">Пожалуйста, введите хотя бы одну инструкцию.</p>
     <button class="error-modal-button" onclick="closeErrorModal()">Закрыть</button>
   </div>
 </div>
@@ -277,7 +276,8 @@
         document.getElementById('modal').style.display = 'none';
     }
 
-    function openErrorModal() {
+    function openErrorModal(message) {
+        document.getElementById('error-message').textContent = message;
         document.getElementById('error-modal').style.display = 'flex';
     }
 
@@ -290,19 +290,19 @@
         const carDescription = document.getElementById('machine-description').value;
         const registerCount = document.getElementById('register-count').value;
 
+        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value);
 
-        const firstInstruction = document.querySelector('.input-field').value;
-        if (!firstInstruction) {
+        // Проверка инструкций
+        const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
+        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction.trim()));
+
+        if (invalidInstructions.length > 0) {
             closeModal();
-            openErrorModal();
+            openErrorModal("Некорректная инструкция: " + invalidInstructions.join(", "));
             return;
         }
 
         const authorName = "<%= current_user.id %>";
-
-        const instructions = Array.from(document.querySelectorAll('.input-field')).map((input, index) => {
-            return `${index + 1}. ${input.value}`;
-        });
 
         const data = {
             name: carName,
