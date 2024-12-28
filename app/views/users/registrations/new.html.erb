@@ -19,6 +19,13 @@
       background-color: #ddd;
       outline: none;
     }
+    .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 2px; 
+        margin-left: 5px;
+        padding: 0;
+        }
     
   </style>
 
@@ -34,8 +41,6 @@
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name),
        html: { method: :post,  style: "width: 30%;"  }) do |f| %>
         <h1>Регистрация</h1>
-       
-        <p style="font-size:18px;">Пожалуйста, заполните эту форму, чтобы создать учетную запись.</p>
        
         <div class="field-container" >
           <%= f.label :name, "Имя" %>

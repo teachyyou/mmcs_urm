@@ -5,16 +5,24 @@ Rails.application.routes.draw do
 
   get "/machines/new", to: "machines#new_machine", as: "new_machine"
 
-  post "/machines", to: "machines#create", as: "create_machine"
+  post "/decode", to: "decode#execute"
 
-  resources :machines, only: [:create, :index]
 
-  get '/machines/show_machine/:id', to: 'machines#show_machine', as: 'show_machine'
 
-  devise_for :users, controllers: { registrations: 'users/registrations' }
+  put "/machines/:id", to: "machines#update", as: "update_machine"
 
-  #get 'machines/index', to: 'devise/registrations#new', as: 'new_user_registration'
+  resources :machines, only: [:create, :index, :update, :destroy]
 
-  get '/machines/:id/edit', to: 'machines#new_machine', as: 'edit_machine'
+  resources :machines do
+    member do
+      get "run", to: "run#show"
+      post "run", to: "run#execute"
+    end
+  end
+
+  get "/machines/show_machine/:id", to: "machines#show_machine", as: "show_machine"
+
+  devise_for :users, controllers: { registrations: "users/registrations" }
+
 
 end

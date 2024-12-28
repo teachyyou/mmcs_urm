@@ -32,6 +32,7 @@ gem "solid_cable"
 
 # Собственно, наш гем
 gem "mmcs_urm"
+gem "prime"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -56,6 +57,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "dotenv-rails"
+
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -67,4 +70,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+  gem 'rails-controller-testing'
 end

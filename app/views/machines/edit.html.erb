@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Входные регистры</title>
+  <title>Редактирование Машины</title>
   <style>
       body {
           display: flex;
@@ -42,10 +42,10 @@
           margin-top: 20px;
       }
       .add-button:hover {
-          background-color:var(--dark-blue-background);
+          background-color: var(--dark-blue-background);
       }
       .add-button:active {
-          background-color:var(--dark-dark-blue-background);
+          background-color: var(--dark-dark-blue-background);
       }
       .label-container {
           display: flex;
@@ -177,18 +177,25 @@
 <div class="label-container">
   <label for="register-count">Количество выходных регистров:</label>
   <select id="register-count">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
+    <option value="1" <%= 'selected' if @machine.input_counts == 1 %>>1</option>
+    <option value="2" <%= 'selected' if @machine.input_counts == 2 %>>2</option>
+    <option value="3" <%= 'selected' if @machine.input_counts == 3 %>>3</option>
   </select>
 </div>
+
 <div class="form-container" id="form-container">
     <p style="margin: 10px 8px;">Обратите внимание, что <span class="highlight"><-</span> и <span class="highlight">=</span> из общего синтаксиса URM заменены на <span class="highlight">=</span> и <span class="highlight">==</span> соответсвенно для лучшей читаемости.</p>
-  <div class="input-wrapper">
-    <span class="input-number">1</span>
-    <input type="text" class="input-field" placeholder="Введите текст...">
-  </div>
+  <% @instructions.each_with_index do |instruction, index| %>
+    <div class="input-wrapper">
+      <span class="input-number"><%= index + 1 %></span>
+      <input type="text" class="input-field" placeholder="Введите текст..." value="<%= instruction.sub(/^\d+\.\s*/, '') %>">
+      <% if index > 0 %>
+        <button class="remove-button" onclick="removeInputField(this)">-</button>
+      <% end %>
+    </div>
+  <% end %>
 </div>
+
 <div style="display: flex; align-items: center;">
   <button class="add-button" id="add-button" onclick="addInputField()">+</button>
   <button class="base-button save-button" onclick="openModal()">Сохранить</button>
@@ -197,8 +204,8 @@
 <div class="modal" id="modal">
   <div class="modal-content">
     <h3>Введите информацию</h3>
-    <input type="text" class="modal-input" placeholder="Название Машины" id="machine-name">
-    <textarea class="modal-input" placeholder="Описание" id="machine-description"></textarea>
+    <input type="text" class="modal-input" placeholder="Название Машины" id="machine-name" value="<%= @machine.name %>">
+    <textarea class="modal-input" placeholder="Описание" id="machine-description"><%= @machine.description %></textarea>
     <div style="display: flex; justify-content: flex-end;">
       <button class="modal-button cancel-button" onclick="closeModal()">✖ Отмена</button>
       <button class="modal-button confirm-button" onclick="confirm()">✔ Подтвердить</button>
@@ -206,68 +213,14 @@
   </div>
 </div>
 
-<!-- Модальное окно для ошибки -->
 <div class="error-modal" id="error-modal">
   <div class="error-modal-content">
-    <p id="error-message">Пожалуйста, введите хотя бы одну инструкцию.</p>
+    <p id="error-message">Пожалуйста, введите хотя бы одну корректную инструкцию.</p>
     <button class="error-modal-button" onclick="closeErrorModal()">Закрыть</button>
   </div>
 </div>
 
 <script>
-    let inputCount = 1;
-
-    function addInputField() {
-        if (inputCount < 15) {
-            inputCount++;
-            if (inputCount === 15) {
-                document.getElementById('add-button').style.display = 'none';
-            }
-            const formContainer = document.getElementById('form-container');
-            const newInputWrapper = document.createElement('div');
-            newInputWrapper.className = 'input-wrapper';
-
-            const newInputNumber = document.createElement('span');
-            newInputNumber.className = 'input-number';
-            newInputNumber.textContent = inputCount;
-
-            const newInput = document.createElement('input');
-            newInput.type = 'text';
-            newInput.className = 'input-field';
-            newInput.placeholder = 'Введите текст...';
-
-            const removeButton = document.createElement('button');
-            removeButton.className = 'remove-button';
-            removeButton.textContent = '-';
-            removeButton.onclick = function() { removeInputField(removeButton); };
-
-            newInputWrapper.appendChild(newInputNumber);
-            newInputWrapper.appendChild(newInput);
-            newInputWrapper.appendChild(removeButton);
-            formContainer.appendChild(newInputWrapper);
-        }
-    }
-
-    function removeInputField(button) {
-        const inputWrapper = button.parentElement;
-        inputWrapper.remove();
-        inputCount--;
-        updateInputNumbers();
-
-        if (inputCount < 15) {
-            document.getElementById('add-button').style.display = 'block';
-        }
-    }
-
-    function updateInputNumbers() {
-        const inputWrappers = document.querySelectorAll('.input-wrapper');
-        inputCount = inputWrappers.length;
-        inputWrappers.forEach((wrapper, index) => {
-            const numberSpan = wrapper.querySelector('.input-number');
-            numberSpan.textContent = index + 1;
-        });
-    }
-
     function openModal() {
         document.getElementById('modal').style.display = 'flex';
     }
@@ -276,69 +229,109 @@
         document.getElementById('modal').style.display = 'none';
     }
 
-    function openErrorModal(message) {
-        document.getElementById('error-message').textContent = message;
-        document.getElementById('error-modal').style.display = 'flex';
+    function addInputField() {
+        const formContainer = document.getElementById('form-container');
+        const newInputWrapper = document.createElement('div');
+        newInputWrapper.className = 'input-wrapper';
+        newInputWrapper.innerHTML = `
+            <span class="input-number">${formContainer.children.length + 1}</span>
+            <input type="text" class="input-field" placeholder="Введите текст...">
+            <button class="remove-button" onclick="removeInputField(this)">-</button>
+        `;
+        formContainer.appendChild(newInputWrapper);
+        updateRemoveButtonVisibility();
+    }
+
+    function removeInputField(button) {
+        const inputWrapper = button.parentElement;
+        const formContainer = document.getElementById('form-container');
+        if (formContainer.children.length > 1) {
+            inputWrapper.remove();
+            updateInputNumbers();
+            updateRemoveButtonVisibility();
+        }
+    }
+
+    function updateInputNumbers() {
+        const inputWrappers = document.querySelectorAll('.input-wrapper');
+        inputWrappers.forEach((wrapper, index) => {
+            wrapper.querySelector('.input-number').textContent = index + 1;
+        });
+    }
+
+    function updateRemoveButtonVisibility() {
+        const inputWrappers = document.querySelectorAll('.input-wrapper');
+        inputWrappers.forEach((wrapper, index) => {
+            const removeButton = wrapper.querySelector('.remove-button');
+            if (removeButton) {
+                if (index === 0) {
+                    removeButton.style.display = 'none';
+                } else {
+                    removeButton.style.display = 'inline-block';
+                }
+            }
+        });
+    }
+
+    function confirm() {
+        const machineName = document.getElementById('machine-name').value.trim();
+        const machineDescription = document.getElementById('machine-description').value.trim();
+        const inputsCount = parseInt(document.getElementById('register-count').value, 10);
+
+        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value.trim());
+
+        // Проверка инструкций
+        const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
+
+        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction));
+
+        if (invalidInstructions.length > 0) {
+            closeModal(); // Закрываем основное модальное окно
+            document.getElementById('error-message').textContent = "Некорректная инструкция: " + invalidInstructions.join(", ");
+            openErrorModal(); // Открываем модальное окно с ошибкой
+            return;
+        }
+
+        const machineId = <%= @machine.id %>;
+        const data = {
+            machine: {
+                name: machineName,
+                description: machineDescription,
+                input_counts: inputsCount,
+                instructions: instructions
+            }
+        };
+
+        fetch(`/machines/${machineId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    closeModal();
+                    window.location.href = '/'
+                } else {
+                    alert('Ошибка при сохранении машины.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке данных.');
+            });
     }
 
     function closeErrorModal() {
         document.getElementById('error-modal').style.display = 'none';
     }
 
-    function confirm() {
-        const carName = document.getElementById('machine-name').value;
-        const carDescription = document.getElementById('machine-description').value;
-        const registerCount = document.getElementById('register-count').value;
-
-        const instructions = Array.from(document.querySelectorAll('.input-field')).map(input => input.value);
-
-        // Проверка инструкций
-        const instructionRegex = /^(x\d+\s*=\s*x\d+|\s*x\d+\s*=\s*x\d+\s*\+\s*1|\s*x\d+\s*=\s*x\d+\s*-\s*1|\s*if\s*x\d+\s*==\s*0\s*goto\s*\d+\s*else\s*goto\s*\d+|\s*x\d+\s*=\s*\d+|stop)$/;
-        const invalidInstructions = instructions.filter(instruction => !instructionRegex.test(instruction.trim()));
-
-        if (invalidInstructions.length > 0) {
-            closeModal();
-            openErrorModal("Некорректная инструкция: " + invalidInstructions.join(", "));
-            return;
-        }
-
-        const authorName = "<%= current_user.id %>";
-
-        const data = {
-            name: carName,
-            description: carDescription,
-            author: authorName,
-            input_counts: registerCount,
-            instructions: instructions
-        };
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-        fetch('/machines', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': csrfToken // Добавляем CSRF-токен
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка запроса: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-                window.location.href = '/machines#index';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
-        closeModal();
+    function openErrorModal() {
+        document.getElementById('error-modal').style.display = 'flex';
     }
-
 </script>
+
 </body>
 </html>
