@@ -22,11 +22,11 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV.fetch("DEVELOPMENT_DB_NAME") %>
-  username: <%= ENV.fetch("DEVELOPMENT_DB_USER") %>
-  password: <%= ENV.fetch("DEVELOPMENT_DB_PASSWORD") %>
-  host: <%= ENV.fetch("DEVELOPMENT_DB_HOST") %>
-  port: <%= ENV.fetch("DEVELOPMENT_DB_PORT") %>
+  database: <%= ENV.fetch("DEVELOPMENT_DB_NAME", "development_db") %>
+  username: <%= ENV.fetch("DEVELOPMENT_DB_USER", "postgres") %>
+  password: <%= ENV.fetch("DEVELOPMENT_DB_PASSWORD", "postgres") %>
+  host: <%= ENV.fetch("DEVELOPMENT_DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DEVELOPMENT_DB_PORT", 5432) %>
 
 
   # The specified database role being used to connect to PostgreSQL.
@@ -61,7 +61,12 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: mmcs_urm_test
+  database: test_database
+  username: postgres
+  password: postgres
+  host: localhost
+  port: 5432
+
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

@@ -1,20 +1,28 @@
 class RunController < ApplicationController
-  def show
-    @machine = Machine.find(params[:id])
+  def execute
+    machine = Machine.find_by(id: params[:id])
 
-    if @machine.nil?
-      redirect_to machines_path and return
+    unless machine
+      render json: { error: 'Машина не найдена.' }, status: :not_found
+      return
     end
 
-    @name = @machine.name
-    @description = @machine.description
-    @instructions = @machine.instructions
-    @input_counts = @machine.input_counts.to_i
-  end
-
-  def execute
-    machine = Machine.find(params[:id])
     inputs = params[:inputs]
+
+    if inputs.blank? || !inputs.is_a?(ActionController::Parameters)
+      render json: { error: 'Входные данные недействительны или отсутствуют.' }, status: :unprocessable_entity
+      return
+    end
+
+    # Объявляем input_array вне блока begin...rescue
+    input_array = inputs.values.map do |val|
+      Integer(val) rescue nil
+    end
+
+    if input_array.any?(&:nil?) || input_array.any? { |val| val.negative? }
+      render json: { error: 'Входные данные должны быть целыми числами >= 0.' }, status: :unprocessable_entity
+      return
+    end
 
     Rails.logger.info "Запущена машина #{machine.id} с входными данными: #{inputs}"
 
@@ -23,15 +31,10 @@ class RunController < ApplicationController
 
     machine_worker = Urm::Machine.new(machine.input_counts)
     machine_worker.add_all(machine.instructions)
-    input_array = inputs.values.map(&:to_i)
 
-    # Создаём поток для выполнения кода
     worker_thread = Thread.new do
       begin
         result = machine_worker.run(*input_array)
-        puts "lalala"
-        puts *input_array
-        puts result
       rescue => e
         error = e.message
       end
@@ -49,6 +52,4 @@ class RunController < ApplicationController
       render json: { output: result }
     end
   end
-
-
 end
