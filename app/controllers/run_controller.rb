@@ -1,8 +1,8 @@
 class RunController < ApplicationController
   def execute
-    begin
-      machine = Machine.find(params[:id])
-    rescue ActiveRecord::RecordNotFound
+    machine = Machine.find_by(id: params[:id])
+
+    unless machine
       render json: { error: 'Машина не найдена.' }, status: :not_found
       return
     end
@@ -12,6 +12,11 @@ class RunController < ApplicationController
     if inputs.blank? || !inputs.is_a?(ActionController::Parameters)
       render json: { error: 'Входные данные недействительны или отсутствуют.' }, status: :unprocessable_entity
       return
+    end
+
+    # Объявляем input_array вне блока begin...rescue
+    input_array = inputs.values.map do |val|
+      Integer(val) rescue nil
     end
 
     if input_array.any?(&:nil?) || input_array.any? { |val| val.negative? }
@@ -26,7 +31,6 @@ class RunController < ApplicationController
 
     machine_worker = Urm::Machine.new(machine.input_counts)
     machine_worker.add_all(machine.instructions)
-    input_array = inputs.values.map(&:to_i)
 
     worker_thread = Thread.new do
       begin
