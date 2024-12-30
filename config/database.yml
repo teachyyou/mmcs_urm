@@ -97,7 +97,7 @@ production:
   cache:
     <<: *primary_production
     database: mmcs_urm_production_cache
-    migrations_paths: db/cache_migrate
+    migrations_paths: db/cache_migrate c
   queue:
     <<: *primary_production
     database: mmcs_urm_production_queue
