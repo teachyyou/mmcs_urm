@@ -95,3 +95,4 @@ production:
       password: <%= ENV.fetch("PRODUCTION_DB_PASSWORD") %>
       host: <%= ENV.fetch("PRODUCTION_DB_HOST") %>
       port: <%= ENV.fetch("PRODUCTION_DB_PORT") %>
+      url: <%= ENV.fetch("PRODUCTION_DB_URL") %>
